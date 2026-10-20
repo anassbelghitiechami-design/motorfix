@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# Editores
+.vscode/
+.idea/
+
+# Configuración local (credenciales de la BD)
+backend/config.local.php
+
+# Logs
+*.log
