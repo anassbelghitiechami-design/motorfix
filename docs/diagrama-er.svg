@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1780 1130" width="1780" height="1130" font-family="Helvetica, Arial, sans-serif" fill="#111" role="img" aria-label="Diagrama EER de MotorFix">
+<rect width="1780" height="1130" fill="#fff"/>
+<text x="24" y="40" font-size="26" font-weight="700">Modelo EER · MotorFix</text>
+<g transform="translate(0,40)">
+<line x1="590" y1="70" x2="760" y2="130" stroke="#222" stroke-width="1.2"/>
+<line x1="690" y1="35" x2="760" y2="130" stroke="#222" stroke-width="1.2"/>
+<line x1="835" y1="35" x2="760" y2="130" stroke="#222" stroke-width="1.2"/>
+<line x1="935" y1="70" x2="760" y2="130" stroke="#222" stroke-width="1.2"/>
+<line x1="505" y1="415" x2="620" y2="330" stroke="#222" stroke-width="1.2"/>
+<line x1="770" y1="410" x2="620" y2="330" stroke="#222" stroke-width="1.2"/>
+<line x1="430" y1="560" x2="620" y2="330" stroke="#222" stroke-width="1.2"/>
+<line x1="430" y1="560" x2="300" y2="505" stroke="#222" stroke-width="1.2"/>
+<line x1="430" y1="560" x2="290" y2="560" stroke="#222" stroke-width="1.2"/>
+<line x1="430" y1="560" x2="300" y2="615" stroke="#222" stroke-width="1.2"/>
+<line x1="430" y1="560" x2="360" y2="672" stroke="#222" stroke-width="1.2"/>
+<line x1="470" y1="735" x2="620" y2="640" stroke="#222" stroke-width="1.2"/>
+<line x1="560" y1="790" x2="620" y2="640" stroke="#222" stroke-width="1.2"/>
+<line x1="690" y1="800" x2="620" y2="640" stroke="#222" stroke-width="1.2"/>
+<line x1="790" y1="760" x2="620" y2="640" stroke="#222" stroke-width="1.2"/>
+<line x1="885" y1="585" x2="1040" y2="640" stroke="#222" stroke-width="1.2"/>
+<line x1="1150" y1="535" x2="1040" y2="640" stroke="#222" stroke-width="1.2"/>
+<line x1="925" y1="495" x2="1040" y2="640" stroke="#222" stroke-width="1.2"/>
+<line x1="895" y1="725" x2="1040" y2="640" stroke="#222" stroke-width="1.2"/>
+<line x1="1140" y1="770" x2="1040" y2="640" stroke="#222" stroke-width="1.2"/>
+<line x1="1250" y1="565" x2="1040" y2="640" stroke="#222" stroke-width="1.2"/>
+<line x1="1250" y1="565" x2="1395" y2="520" stroke="#222" stroke-width="1.2"/>
+<line x1="1250" y1="565" x2="1410" y2="585" stroke="#222" stroke-width="1.2"/>
+<line x1="1250" y1="715" x2="1040" y2="640" stroke="#222" stroke-width="1.2"/>
+<line x1="1250" y1="715" x2="1405" y2="650" stroke="#222" stroke-width="1.2"/>
+<line x1="1250" y1="715" x2="1420" y2="705" stroke="#222" stroke-width="1.2"/>
+<line x1="1250" y1="715" x2="1410" y2="760" stroke="#222" stroke-width="1.2"/>
+<line x1="1250" y1="715" x2="1380" y2="815" stroke="#222" stroke-width="1.2"/>
+<line x1="880" y1="920" x2="1040" y2="970" stroke="#222" stroke-width="1.2"/>
+<line x1="870" y1="980" x2="1040" y2="970" stroke="#222" stroke-width="1.2"/>
+<line x1="895" y1="1040" x2="1040" y2="970" stroke="#222" stroke-width="1.2"/>
+<line x1="1215" y1="920" x2="1040" y2="970" stroke="#222" stroke-width="1.2"/>
+<line x1="1215" y1="980" x2="1040" y2="970" stroke="#222" stroke-width="1.2"/>
+<line x1="1190" y1="1040" x2="1040" y2="970" stroke="#222" stroke-width="1.2"/>
+<line x1="620" y1="485" x2="620" y2="330" stroke="#222" stroke-width="1.4"/>
+<line x1="620" y1="485" x2="620" y2="640" stroke="#222" stroke-width="1.4"/>
+<line x1="830" y1="640" x2="620" y2="640" stroke="#222" stroke-width="1.4"/>
+<line x1="830" y1="640" x2="1040" y2="640" stroke="#222" stroke-width="1.4"/>
+<line x1="1040" y1="485" x2="1040" y2="330" stroke="#222" stroke-width="1.4"/>
+<line x1="1040" y1="485" x2="1040" y2="640" stroke="#222" stroke-width="1.4"/>
+<line x1="1040" y1="805" x2="1040" y2="640" stroke="#222" stroke-width="1.4"/>
+<line x1="1040" y1="805" x2="1040" y2="970" stroke="#222" stroke-width="1.4"/>
+<line x1="760" y1="152.0" x2="181.6" y2="304.9" stroke="#222" stroke-width="1.4"/>
+<line x1="760" y1="152.0" x2="411.0" y2="303.2" stroke="#222" stroke-width="1.4"/>
+<line x1="760" y1="152.0" x2="628.0" y2="299.1" stroke="#222" stroke-width="1.4"/>
+<line x1="760" y1="152.0" x2="1029.5" y2="302.2" stroke="#222" stroke-width="1.4"/>
+<ellipse cx="590" cy="70" rx="60" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="590" y="75" font-size="14" text-anchor="middle">id_usuario</text>
+<line x1="556" y1="77" x2="624" y2="77" stroke="#111" stroke-width="1.2"/>
+<ellipse cx="690" cy="35" rx="37" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="690" y="40" font-size="14" text-anchor="middle">email</text>
+<circle cx="704.5" cy="54.7" r="4.5" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<ellipse cx="835" cy="35" rx="51" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="835" y="40" font-size="14" text-anchor="middle">password</text>
+<circle cx="819.2" cy="55.0" r="4.5" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<ellipse cx="935" cy="70" rx="42" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="935" y="75" font-size="14" text-anchor="middle">nombre</text>
+<circle cx="898.9" cy="82.4" r="4.5" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<ellipse cx="505" cy="415" rx="36" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="505" y="420" font-size="14" text-anchor="middle">dni</text>
+<line x1="495" y1="422" x2="515" y2="422" stroke="#111" stroke-width="1.2"/>
+<ellipse cx="770" cy="410" rx="51" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="770" y="415" font-size="14" text-anchor="middle">telefono</text>
+<circle cx="739.0" cy="393.5" r="4.5" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<ellipse cx="300" cy="505" rx="37" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="300" y="510" font-size="14" text-anchor="middle">calle</text>
+<ellipse cx="290" cy="560" rx="42" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="290" y="565" font-size="14" text-anchor="middle">numero</text>
+<ellipse cx="300" cy="615" rx="36" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="300" y="620" font-size="14" text-anchor="middle">cp</text>
+<ellipse cx="360" cy="672" rx="55" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="360" y="677" font-size="14" text-anchor="middle">localidad</text>
+<ellipse cx="470" cy="735" rx="55" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="470" y="740" font-size="14" text-anchor="middle">matricula</text>
+<line x1="439" y1="742" x2="501" y2="742" stroke="#111" stroke-width="1.2"/>
+<ellipse cx="560" cy="790" rx="37" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="560" y="795" font-size="14" text-anchor="middle">marca</text>
+<circle cx="568.4" cy="769.1" r="4.5" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<ellipse cx="690" cy="800" rx="42" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="690" y="805" font-size="14" text-anchor="middle">modelo</text>
+<circle cx="680.9" cy="779.1" r="4.5" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<ellipse cx="790" cy="760" rx="36" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="790" y="765" font-size="14" text-anchor="middle">anio</text>
+<ellipse cx="885" cy="585" rx="46" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="885" y="590" font-size="14" text-anchor="middle">id_cita</text>
+<line x1="861" y1="592" x2="909" y2="592" stroke="#111" stroke-width="1.2"/>
+<ellipse cx="1150" cy="535" rx="60" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="1150" y="540" font-size="14" text-anchor="middle">fecha_hora</text>
+<circle cx="1129.7" cy="554.4" r="4.5" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<ellipse cx="925" cy="495" rx="74" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="925" y="500" font-size="14" text-anchor="middle">tipo_servicio</text>
+<ellipse cx="895" cy="725" rx="42" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="895" y="730" font-size="14" text-anchor="middle">motivo</text>
+<ellipse cx="1140" cy="770" rx="42" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="1140" y="775" font-size="14" text-anchor="middle">estado</text>
+<circle cx="1124.8" cy="750.2" r="4.5" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<ellipse cx="1395" cy="520" rx="37" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="1395" y="525" font-size="14" text-anchor="middle">horas</text>
+<ellipse cx="1410" cy="585" rx="65" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="1410" y="590" font-size="14" text-anchor="middle">precio_hora</text>
+<ellipse cx="1405" cy="650" rx="60" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="1405" y="655" font-size="14" text-anchor="middle">referencia</text>
+<ellipse cx="1420" cy="705" rx="65" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="1420" y="710" font-size="14" text-anchor="middle">descripcion</text>
+<ellipse cx="1410" cy="760" rx="51" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="1410" y="765" font-size="14" text-anchor="middle">unidades</text>
+<ellipse cx="1380" cy="815" rx="42" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="1380" y="820" font-size="14" text-anchor="middle">precio</text>
+<ellipse cx="880" cy="920" rx="42" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="880" y="925" font-size="14" text-anchor="middle">numero</text>
+<line x1="860" y1="927" x2="900" y2="927" stroke="#111" stroke-width="1.2"/>
+<ellipse cx="870" cy="980" rx="37" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="870" y="985" font-size="14" text-anchor="middle">fecha</text>
+<circle cx="911.2" cy="977.6" r="4.5" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<ellipse cx="895" cy="1040" rx="46" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="895" y="1045" font-size="14" text-anchor="middle">iva_pct</text>
+<circle cx="927.1" cy="1024.5" r="4.5" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<ellipse cx="1215" cy="920" rx="78" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="1215" y="925" font-size="14" text-anchor="middle">base_imponible</text>
+<circle cx="1163.3" cy="934.8" r="4.5" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<ellipse cx="1215" cy="980" rx="55" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="1215" y="985" font-size="14" text-anchor="middle">cuota_iva</text>
+<circle cx="1156.0" cy="976.6" r="4.5" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<ellipse cx="1190" cy="1040" rx="37" ry="17" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<text x="1190" y="1045" font-size="14" text-anchor="middle">total</text>
+<circle cx="1160.0" cy="1026.0" r="4.5" fill="#fff" stroke="#222" stroke-width="1.2"/>
+<polygon points="603,485 620,455 637,485" fill="#fff" stroke="#222" stroke-width="1.3"/>
+<polygon points="603,485 620,515 637,485" fill="#111" stroke="#222" stroke-width="1.3"/>
+<polygon points="830,623 800,640 830,657" fill="#fff" stroke="#222" stroke-width="1.3"/>
+<polygon points="830,623 860,640 830,657" fill="#111" stroke="#222" stroke-width="1.3"/>
+<polygon points="1023,485 1040,455 1057,485" fill="#fff" stroke="#222" stroke-width="1.3"/>
+<polygon points="1023,485 1040,515 1057,485" fill="#111" stroke="#222" stroke-width="1.3"/>
+<polygon points="1023,805 1040,775 1057,805" fill="#fff" stroke="#222" stroke-width="1.3"/>
+<polygon points="1023,805 1040,835 1057,805" fill="#fff" stroke="#222" stroke-width="1.3"/>
+<polygon points="170.0,308.0 183.9,298.1 187.0,309.7" fill="#111"/>
+<polygon points="400.0,308.0 412.3,296.1 417.1,307.1" fill="#111"/>
+<polygon points="620.0,308.0 626.2,292.1 635.2,300.1" fill="#111"/>
+<polygon points="1040.0,308.0 1023.1,305.5 1028.9,295.0" fill="#111"/>
+<rect x="700.0" y="108.0" width="120" height="44" fill="#fff" stroke="#222" stroke-width="1.3"/>
+<text x="760" y="136" font-size="17" text-anchor="middle">USUARIO</text>
+<rect x="83.5" y="308.0" width="173" height="44" fill="#fff" stroke="#222" stroke-width="1.3"/>
+<text x="170" y="336" font-size="17" text-anchor="middle">ADMINISTRADOR</text>
+<rect x="340.0" y="308.0" width="120" height="44" fill="#fff" stroke="#222" stroke-width="1.3"/>
+<text x="400" y="336" font-size="17" text-anchor="middle">OFICINA</text>
+<rect x="560.0" y="308.0" width="120" height="44" fill="#fff" stroke="#222" stroke-width="1.3"/>
+<text x="620" y="336" font-size="17" text-anchor="middle">CLIENTE</text>
+<rect x="980.0" y="308.0" width="120" height="44" fill="#fff" stroke="#222" stroke-width="1.3"/>
+<text x="1040" y="336" font-size="17" text-anchor="middle">MECANICO</text>
+<rect x="556.0" y="614.0" width="128" height="52" fill="#fff" stroke="#222" stroke-width="1.3"/>
+<rect x="560.0" y="618.0" width="120" height="44" fill="#fff" stroke="#222" stroke-width="1.3"/>
+<text x="620" y="646" font-size="17" text-anchor="middle">VEHICULO</text>
+<rect x="976.0" y="614.0" width="128" height="52" fill="#fff" stroke="#222" stroke-width="1.3"/>
+<rect x="980.0" y="618.0" width="120" height="44" fill="#fff" stroke="#222" stroke-width="1.3"/>
+<text x="1040" y="646" font-size="17" text-anchor="middle">CITA</text>
+<rect x="976.0" y="944.0" width="128" height="52" fill="#fff" stroke="#222" stroke-width="1.3"/>
+<rect x="980.0" y="948.0" width="120" height="44" fill="#fff" stroke="#222" stroke-width="1.3"/>
+<text x="1040" y="976" font-size="17" text-anchor="middle">FACTURA</text>
+<text x="436" y="554" font-size="15">direccion</text>
+<text x="1260" y="597" font-size="15">mano_obra</text>
+<text x="1188" y="741" font-size="15">piezas</text>
+<text x="1205" y="702" font-size="16" font-weight="700">n</text>
+<text x="645" y="490" font-size="13">tiene</text>
+<text x="646" y="386" font-size="14" text-anchor="middle">(0-n)</text>
+<text x="646" y="592" font-size="14" text-anchor="middle">(1-1)</text>
+<text x="830" y="616" font-size="13" text-anchor="middle">recibe</text>
+<text x="710" y="631" font-size="14" text-anchor="middle">(0-n)</text>
+<text x="950" y="631" font-size="14" text-anchor="middle">(1-1)</text>
+<text x="1065" y="490" font-size="13">atiende</text>
+<text x="1066" y="386" font-size="14" text-anchor="middle">(0-n)</text>
+<text x="1066" y="592" font-size="14" text-anchor="middle">(0-1)</text>
+<text x="1065" y="810" font-size="13">genera</text>
+<text x="1014" y="696" font-size="14" text-anchor="middle">(0-1)</text>
+<text x="1066" y="922" font-size="14" text-anchor="middle">(1-1)</text>
+<text x="774" y="186.0" font-size="15" font-weight="700">T,D</text>
+<text x="686.0" y="668.0" font-size="12" font-weight="700">E</text>
+<text x="1106.0" y="668.0" font-size="12" font-weight="700">E</text>
+<text x="1106.0" y="998.0" font-size="12" font-weight="700">E</text>
+</g>
+</svg>
