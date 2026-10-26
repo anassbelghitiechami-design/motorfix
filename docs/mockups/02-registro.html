@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MotorFix · Registro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#000000}
+input,select,textarea{background:#1A1A1A;color:#FFFFFF;color-scheme:dark}
+a{color:#FF0000}a:hover{color:#FF0000}
+</style>
+</head>
+<body>
+<div style="min-height: 860px; font-family: Inter, system-ui, sans-serif; color: #FFFFFF; background: #000000; display: flex; flex-direction: column">
+  <header style="background: #000000; color: #FFFFFF; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FF0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"></path></svg>
+      <span style="font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: 1px; color: #FF0000">MOTORFIX</span>
+    </div>
+    <a href="01-login.html" style="color: #FFFFFF; font-size: 14px">Ya tengo cuenta · Iniciar sesión</a>
+  </header>
+  <main style="flex: 1; display: flex; justify-content: center; padding: 48px 24px; box-sizing: border-box">
+    <div style="flex: 999 1 480px; min-width: 0; display: flex; align-items: center; justify-content: center; padding: 48px 24px; box-sizing: border-box">
+    <form style="width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <h2 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-size: 36px; font-weight: 700">Iniciar sesión</h2>
+        <p style="margin: 0; font-size: 15px; color: #B3B3B3">Acceso para clientes y personal del taller.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="email" style="font-size: 14px; font-weight: 600">Email</label>
+        <input id="email" type="email" placeholder="nombre@correo.com" style="height: 46px; padding: 0 14px; border: 1px solid #555555; border-radius: 8px; font-size: 15px; background: #1A1A1A; color: #FFFFFF">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="pass" style="font-size: 14px; font-weight: 600">Contraseña</label>
+        <input id="pass" type="password" placeholder="••••••••" style="height: 46px; padding: 0 14px; border: 1px solid #555555; border-radius: 8px; font-size: 15px; background: #1A1A1A; color: #FFFFFF">
+      </div>
+      <div style="padding: 12px 14px; border-radius: 8px; background: #FFE5E5; color: #FF0000; font-size: 14px">Email o contraseña incorrectos.</div>
+      <button type="button" style="height: 48px; border: 0; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; background: #FF0000; color: #FFFFFF">Entrar</button>
+      <p style="margin: 0; font-size: 14px; color: #B3B3B3; text-align: center">¿No tienes cuenta? <a href="02-registro.html">Regístrate como cliente</a></p>
+    </form>
+  </div><form style="width: 100%; max-width: 720px; background: #141414; border: 1px solid #333333; border-radius: 12px; padding: 40px; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <h1 style="margin: 0; font-family: 'Barlow Condensed', sans-serif; font-size: 40px; font-weight: 700">Crear cuenta de cliente</h1>
+        <p style="margin: 0; font-size: 15px; color: #B3B3B3">Con tu cuenta podrás registrar tus vehículos y pedir cita previa.</p>
+      </div>
+      <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px">
+        <legend style="padding: 0; margin-bottom: 12px; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #B3B3B3">Datos personales</legend>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px">
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="dni" style="font-size: 14px; font-weight: 600">DNI</label><input id="dni" placeholder="12345678A" style="height: 44px; padding: 0 12px; border: 1px solid #555555; border-radius: 8px; font-size: 15px"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="tel" style="font-size: 14px; font-weight: 600">Teléfono</label><input id="tel" type="tel" placeholder="600 000 000" style="height: 44px; padding: 0 12px; border: 1px solid #555555; border-radius: 8px; font-size: 15px"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="nom" style="font-size: 14px; font-weight: 600">Nombre</label><input id="nom" style="height: 44px; padding: 0 12px; border: 1px solid #555555; border-radius: 8px; font-size: 15px"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="ape" style="font-size: 14px; font-weight: 600">Apellidos</label><input id="ape" style="height: 44px; padding: 0 12px; border: 1px solid #555555; border-radius: 8px; font-size: 15px"></div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="dir" style="font-size: 14px; font-weight: 600">Dirección</label><input id="dir" style="height: 44px; padding: 0 12px; border: 1px solid #555555; border-radius: 8px; font-size: 15px"></div>
+      </fieldset>
+      <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px">
+        <legend style="padding: 0; margin-bottom: 12px; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #B3B3B3">Acceso</legend>
+        <div style="display: flex; flex-direction: column; gap: 6px"><label for="mail" style="font-size: 14px; font-weight: 600">Email</label><input id="mail" type="email" style="height: 44px; padding: 0 12px; border: 1px solid #555555; border-radius: 8px; font-size: 15px"></div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px">
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="p1" style="font-size: 14px; font-weight: 600">Contraseña</label><input id="p1" type="password" style="height: 44px; padding: 0 12px; border: 1px solid #555555; border-radius: 8px; font-size: 15px"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><label for="p2" style="font-size: 14px; font-weight: 600">Repetir contraseña</label><input id="p2" type="password" style="height: 44px; padding: 0 12px; border: 1px solid #FF0000; border-radius: 8px; font-size: 15px"><span style="font-size: 13px; color: #FF0000">Las contraseñas no coinciden</span></div>
+        </div>
+      </fieldset>
+      <div style="display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap">
+        <a href="01-login.html" style="height: 48px; padding: 0 20px; display: flex; align-items: center; border: 0; border-radius: 8px; background: #FF0000; color: #FFFFFF; text-decoration: none; font-weight: 600">Cancelar</a>
+        <button type="button" style="height: 48px; padding: 0 28px; border: 0; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; background: #FF0000; color: #FFFFFF">Crear cuenta</button>
+      </div>
+    </form>
+  </main>
+</div>
+
+
+
+
+
+
+
+
+</body></html>
