@@ -1,0 +1,102 @@
+/* =========================================================
+   MotorFix · Pantalla de Login
+   ========================================================= */
+
+.login {
+    min-height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* ---------- Panel de presentación (izquierda) ---------- */
+
+.login-presentacion {
+    flex: 1 1 420px;
+    padding: 56px;
+    border-right: 1px solid var(--borde);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 48px;
+}
+
+.login-presentacion .eslogan {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 440px;
+}
+
+.login-presentacion h1 {
+    font-size: 56px;
+    line-height: 1;
+}
+
+.login-presentacion p {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--texto-secundario);
+}
+
+.login-presentacion .pie {
+    font-size: 13px;
+}
+
+/* ---------- Formulario (derecha) ---------- */
+
+.login-formulario {
+    flex: 999 1 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+}
+
+.login-formulario form {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.login-formulario .cabecera {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.login-formulario h2 {
+    font-size: 36px;
+}
+
+.login-formulario .cabecera p,
+.login-formulario .registro {
+    margin: 0;
+    font-size: 15px;
+    color: var(--texto-secundario);
+}
+
+.login-formulario .registro {
+    text-align: center;
+}
+
+/* ---------- Móvil ---------- */
+
+@media (max-width: 700px) {
+    .login-presentacion {
+        padding: 32px 24px;
+        border-right: 0;
+        border-bottom: 1px solid var(--borde);
+        gap: 24px;
+    }
+
+    .login-presentacion h1 {
+        font-size: 40px;
+    }
+
+    .login-presentacion .pie {
+        display: none;
+    }
+}

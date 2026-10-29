@@ -1,0 +1,151 @@
+/* =========================================================
+   MotorFix · Estilos comunes a todas las pantallas
+   ========================================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&display=swap");
+
+:root {
+    --fondo: #000000;
+    --superficie: #000000;
+    --borde: #333333;
+    --borde-campo: #555555;
+    --texto: #ffffff;
+    --texto-secundario: #b3b3b3;
+    --rojo: #ff0000;
+    --error-fondo: #ffe5e5;
+    --exito-fondo: #d1fae5;
+    --exito-texto: #065f46;
+    --radio: 8px;
+    --fuente: "Inter", system-ui, sans-serif;
+    --fuente-titulos: "Barlow Condensed", sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--fuente);
+    background: var(--fondo);
+    color: var(--texto);
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--fuente-titulos);
+    font-weight: 700;
+    margin: 0;
+}
+
+a {
+    color: var(--rojo);
+}
+
+/* ---------- Logo ---------- */
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.logo svg {
+    width: 32px;
+    height: 32px;
+}
+
+.logo span {
+    font-family: var(--fuente-titulos);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--rojo);
+}
+
+/* ---------- Formularios ---------- */
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.campo label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+    height: 46px;
+    padding: 0 14px;
+    border: 1px solid var(--borde-campo);
+    border-radius: var(--radio);
+    background: var(--superficie);
+    color: var(--texto);
+    font: inherit;
+    font-size: 15px;
+}
+
+.campo textarea {
+    height: auto;
+    padding: 10px 14px;
+    resize: vertical;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+    outline: 2px solid var(--rojo);
+    outline-offset: 1px;
+}
+
+/* ---------- Botones ---------- */
+
+.boton {
+    height: 48px;
+    padding: 0 24px;
+    border: 0;
+    border-radius: var(--radio);
+    background: var(--rojo);
+    color: #ffffff;
+    font: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.boton:hover {
+    filter: brightness(0.9);
+}
+
+.boton-secundario {
+    background: var(--fondo);
+    border: 2px solid var(--rojo);
+}
+
+/* ---------- Mensajes (respuesta msg del servidor) ---------- */
+
+.mensaje {
+    padding: 12px 14px;
+    border-radius: var(--radio);
+    font-size: 14px;
+}
+
+.mensaje-error {
+    background: var(--error-fondo);
+    color: var(--rojo);
+}
+
+.mensaje-exito {
+    background: var(--exito-fondo);
+    color: var(--exito-texto);
+}
+
+.oculto {
+    display: none;
+}
