@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotorFix · Iniciar sesión</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+    <main class="login">
+
+        <!-- Panel de presentación -->
+        <section class="login-presentacion">
+            <a class="logo" href="login.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ff0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"></path>
+                </svg>
+                <span>MOTORFIX</span>
+            </a>
+
+            <div class="eslogan">
+                <h1>Tu taller, sin papeles.</h1>
+                <p>Pide cita, sigue el estado de tu reparación y consulta tus facturas desde cualquier sitio.</p>
+            </div>
+
+            <p class="pie">Taller MotorFix · [DIRECCIÓN] · [TELÉFONO]</p>
+        </section>
+
+        <!-- Formulario de acceso (lo enviará login.js con fetch, sin recargar) -->
+        <section class="login-formulario">
+            <form id="formLogin" novalidate>
+                <div class="cabecera">
+                    <h2>Iniciar sesión</h2>
+                    <p>Acceso para clientes y personal del taller.</p>
+                </div>
+
+                <div class="campo">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="nombre@correo.com" autocomplete="email" required>
+                </div>
+
+                <div class="campo">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" autocomplete="current-password" required>
+                </div>
+
+                <!-- Aquí se mostrará el msg del servidor si el login falla -->
+                <div id="mensaje" class="mensaje mensaje-error oculto" role="alert"></div>
+
+                <button type="submit" class="boton">Entrar</button>
+
+                <p class="registro">¿No tienes cuenta? <a href="registro.html">Regístrate como cliente</a></p>
+            </form>
+        </section>
+
+    </main>
+</body>
+</html>
