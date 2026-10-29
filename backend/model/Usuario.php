@@ -192,4 +192,28 @@ class Usuario
         $usuario->auth_key = $fila["auth_key"];
         return $usuario;
     }
+
+    // ---------- Login ----------
+
+    // Busca un usuario por su email; devuelve un objeto Usuario o null
+    public static function getByEmail($email)
+    {
+        $pdo = Conexion::getInstance()->getConexion();
+        $stmt = $pdo->prepare("SELECT * FROM usuario WHERE email = :email");
+        $stmt->execute([":email" => $email]);
+        $fila = $stmt->fetch();
+
+        return $fila ? self::desdeFila($fila) : null;
+    }
+
+    // Comprueba email y contraseña; devuelve el Usuario si son correctos o null si no
+    public static function login($email, $passwordPlano)
+    {
+        $usuario = self::getByEmail($email);
+
+        if ($usuario !== null && password_verify($passwordPlano, $usuario->password)) {
+            return $usuario;
+        }
+        return null;
+    }
 }
