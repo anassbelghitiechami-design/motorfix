@@ -84,4 +84,31 @@ class Usuario
     {
         $this->auth_key = $auth_key;
     }
+
+    // ---------- CRUD ----------
+
+    // Inserta el usuario y guarda en el objeto el id generado
+    public function insert()
+    {
+        $pdo = Conexion::getInstance()->getConexion();
+
+        try {
+            $stmt = $pdo->prepare(
+                "INSERT INTO usuario (email, password, nombre, rol, auth_key)
+                 VALUES (:email, :password, :nombre, :rol, :auth_key)"
+            );
+            $stmt->execute([
+                ":email"    => $this->email,
+                ":password" => $this->password,
+                ":nombre"   => $this->nombre,
+                ":rol"      => $this->rol,
+                ":auth_key" => $this->auth_key,
+            ]);
+            $this->id_usuario = (int) $pdo->lastInsertId();
+            return true;
+        } catch (PDOException $e) {
+            error_log("Error al insertar usuario: " . $e->getMessage());
+            return false;
+        }
+    }
 }
