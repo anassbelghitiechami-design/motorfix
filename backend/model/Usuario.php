@@ -4,9 +4,6 @@ require_once __DIR__ . '/Conexion.php';
 
 class Usuario
 {
-    // Roles permitidos (los mismos valores que el ENUM de la tabla usuario)
-    const ROLES = ['admin', 'oficina', 'mecanico', 'cliente'];
-
     private $id_usuario;
     private $email;
     private $password;   // siempre se guarda el hash BCrypt, nunca el texto plano
@@ -68,9 +65,6 @@ class Usuario
 
     public function setRol($rol)
     {
-        if (!in_array($rol, self::ROLES)) {
-            throw new InvalidArgumentException("Rol no válido: $rol");
-        }
         $this->rol = $rol;
     }
 
