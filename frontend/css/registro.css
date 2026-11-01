@@ -1,0 +1,165 @@
+/* =========================================================
+   MotorFix · Pantalla de Registro de cliente
+   ========================================================= */
+
+/* ---------- Cabecera ---------- */
+
+.cabecera-registro {
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.cabecera-registro .logo svg {
+    width: 28px;
+    height: 28px;
+}
+
+.cabecera-registro .logo span {
+    font-size: 24px;
+}
+
+.enlace-login {
+    color: var(--texto);
+    font-size: 14px;
+}
+
+/* ---------- Formulario ---------- */
+
+.registro {
+    display: flex;
+    justify-content: center;
+    padding: 48px 24px;
+}
+
+.tarjeta-registro {
+    width: 100%;
+    max-width: 720px;
+    padding: 40px;
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    background: #141414;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.tarjeta-registro .cabecera {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tarjeta-registro h1 {
+    font-size: 40px;
+}
+
+.tarjeta-registro .cabecera p {
+    margin: 0;
+    font-size: 15px;
+    color: var(--texto-secundario);
+}
+
+/* min-width: 0 evita que el fieldset se salga de la tarjeta (por defecto no encoge) */
+fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+legend {
+    padding: 0;
+    margin-bottom: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--texto-secundario);
+}
+
+/* Los campos de la tarjeta son algo más claros que el fondo */
+.tarjeta-registro .campo input {
+    background: #1a1a1a;
+}
+
+.rejilla {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+/* Calle ocupa el doble que el resto en la fila de la dirección */
+.rejilla-direccion {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.4fr);
+}
+
+/* ---------- Error de un campo ---------- */
+
+.campo-error input {
+    border-color: var(--rojo);
+}
+
+.texto-error {
+    font-size: 13px;
+    color: var(--rojo);
+}
+
+/* ---------- Botones ---------- */
+
+.acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.acciones .boton-secundario {
+    height: 48px;
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+/* Tablet: la dirección pasa a 2 columnas */
+@media (max-width: 760px) {
+    .rejilla-direccion {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .registro {
+        padding: 24px 16px;
+    }
+
+    .tarjeta-registro {
+        padding: 28px 20px;
+    }
+
+    .tarjeta-registro h1 {
+        font-size: 32px;
+    }
+}
+
+/* Móvil: todo en una columna */
+@media (max-width: 520px) {
+    .cabecera-registro {
+        padding: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .rejilla,
+    .rejilla-direccion {
+        grid-template-columns: 1fr;
+    }
+
+    .acciones {
+        flex-direction: column-reverse;
+    }
+}
