@@ -1,0 +1,607 @@
+/* =========================================================
+   MotorFix · Panel de Cliente
+   ========================================================= */
+
+p {
+    margin: 0;
+}
+
+.detalle {
+    font-size: 14px;
+    color: var(--texto-secundario);
+}
+
+.tarjeta {
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+/* ---------- Cabecera ---------- */
+
+.cabecera-panel {
+    min-height: 72px;
+    padding: 0 32px;
+    border-bottom: 1px solid var(--borde);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.cabecera-panel .logo svg {
+    width: 28px;
+    height: 28px;
+}
+
+.cabecera-panel .logo span {
+    font-size: 24px;
+}
+
+.menu {
+    align-self: stretch;
+    display: flex;
+    gap: 4px;
+}
+
+.menu a {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    min-height: 44px;
+    border-bottom: 3px solid transparent;
+    color: var(--texto-secundario);
+    text-decoration: none;
+}
+
+.menu a:hover {
+    color: var(--texto);
+}
+
+.menu a.activo {
+    border-bottom-color: var(--rojo);
+    color: var(--texto);
+    font-weight: 600;
+}
+
+.usuario {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border: 2px solid var(--rojo);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.usuario a {
+    color: var(--texto-secundario);
+}
+
+/* ---------- Contenido ---------- */
+
+.panel {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.saludo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+}
+
+.saludo p {
+    font-size: 14px;
+    color: var(--texto-secundario);
+    margin-bottom: 4px;
+}
+
+.saludo h1 {
+    font-size: 44px;
+    line-height: 1;
+}
+
+.boton-icono svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* ---------- Reparación en curso ---------- */
+
+.reparacion {
+    border: 2px solid var(--rojo);
+    border-radius: 16px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.reparacion-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.reparacion-cabecera > div:first-child {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.etiqueta {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--rojo);
+}
+
+.reparacion h2 {
+    font-size: 32px;
+}
+
+.reparacion .detalle {
+    font-size: 15px;
+}
+
+.presupuesto {
+    text-align: right;
+}
+
+.presupuesto p {
+    font-size: 13px;
+    color: var(--texto-secundario);
+}
+
+.presupuesto .importe,
+.total {
+    font-family: var(--fuente-titulos);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--texto);
+}
+
+/* Barra de pasos: cada paso pinta su barra con ::before */
+.pasos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.pasos li {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--texto-secundario);
+}
+
+.pasos li::before {
+    content: "";
+    height: 6px;
+    border-radius: 3px;
+    background: var(--borde);
+}
+
+.pasos li.hecho {
+    color: var(--texto);
+}
+
+.pasos li.hecho::before {
+    background: var(--rojo);
+}
+
+.pasos li.actual {
+    font-weight: 700;
+}
+
+/* ---------- Mis vehículos ---------- */
+
+.vehiculos {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.seccion-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.seccion-cabecera h2 {
+    font-size: 30px;
+}
+
+/* El formulario está oculto y aparece al ir a #nuevoVehiculo (cliente.js podrá quitar/poner la clase .oculto) */
+.form-vehiculo {
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-vehiculo:target {
+    display: flex;
+}
+
+.form-vehiculo h3 {
+    font-size: 24px;
+}
+
+.rejilla-campos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.form-vehiculo .rejilla-campos {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.lista-vehiculos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+.vehiculo {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.vehiculo-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.matricula {
+    padding: 4px 10px;
+    border: 2px solid var(--texto);
+    border-radius: 6px;
+    font-family: var(--fuente-titulos);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.vehiculo-nombre {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.vehiculo-acciones {
+    display: flex;
+    gap: 8px;
+}
+
+.vehiculo-acciones .boton {
+    flex: 1;
+    height: 44px;
+    font-size: 14px;
+}
+
+.boton-cuadrado {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    background: var(--fondo);
+    color: var(--texto);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.boton-cuadrado svg {
+    width: 18px;
+    height: 18px;
+}
+
+.boton-cuadrado:hover {
+    border-color: var(--texto-secundario);
+}
+
+.boton-borrar {
+    color: var(--rojo);
+}
+
+/* ---------- Etiquetas de estado ---------- */
+
+.estado {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.estado-taller {
+    background: var(--rojo);
+    color: #ffffff;
+}
+
+.estado-al-dia {
+    border: 1px solid var(--borde-campo);
+    color: var(--texto-secundario);
+}
+
+.estado-pendiente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.estado-confirmada {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* ---------- Cita previa, citas y facturas ---------- */
+
+.columnas {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.columna-cita form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.columnas h2 {
+    font-size: 28px;
+}
+
+.campo select {
+    padding: 0 10px;
+}
+
+/* Tipo de servicio: radios con aspecto de "pastilla" */
+.servicios {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.servicios legend {
+    padding: 0;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.opciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.opciones input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+
+.opciones label {
+    height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--borde-campo);
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.opciones input:checked + label {
+    background: var(--rojo);
+    border-color: var(--rojo);
+    font-weight: 600;
+}
+
+.opciones input:focus-visible + label {
+    outline: 2px solid var(--texto);
+    outline-offset: 2px;
+}
+
+.columna-listas {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.columna-listas h2 {
+    margin-bottom: 16px;
+}
+
+.lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.fila {
+    padding: 12px 0;
+    border-top: 1px solid var(--borde);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.fila-texto {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.fila-titulo {
+    font-weight: 600;
+}
+
+.fecha-cita {
+    width: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+}
+
+.fecha-cita .dia {
+    font-family: var(--fuente-titulos);
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.fecha-cita .mes {
+    font-size: 12px;
+    color: var(--texto-secundario);
+    text-transform: uppercase;
+}
+
+.fila .total {
+    font-size: 22px;
+}
+
+.boton-ver {
+    height: 40px;
+    padding: 0 14px;
+    border: 2px solid var(--rojo);
+    border-radius: var(--radio);
+    display: flex;
+    align-items: center;
+    color: var(--texto);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+/* Tablet: la cita previa pasa encima de las listas */
+@media (max-width: 900px) {
+    .columnas {
+        grid-template-columns: 1fr;
+    }
+
+    .form-vehiculo .rejilla-campos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Móvil: el menú baja a su propia fila y todo se apila */
+@media (max-width: 700px) {
+    .cabecera-panel {
+        padding: 12px 16px 0;
+        flex-wrap: wrap;
+    }
+
+    .menu {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .menu a {
+        padding: 0 12px;
+        white-space: nowrap;
+    }
+
+    .panel {
+        padding: 24px 16px;
+        gap: 24px;
+    }
+
+    .saludo {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .saludo h1 {
+        font-size: 34px;
+    }
+
+    .reparacion {
+        padding: 20px;
+    }
+
+    .reparacion-cabecera {
+        flex-direction: column;
+    }
+
+    .presupuesto {
+        text-align: left;
+    }
+
+    /* Los 4 pasos en 2 filas de 2 */
+    .pasos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        row-gap: 16px;
+    }
+
+    .tarjeta {
+        padding: 20px;
+    }
+}
+
+/* Móvil pequeño */
+@media (max-width: 480px) {
+    .rejilla-campos,
+    .form-vehiculo .rejilla-campos {
+        grid-template-columns: 1fr;
+    }
+
+    .acciones {
+        flex-direction: column-reverse;
+    }
+
+    .seccion-cabecera {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .fila {
+        flex-wrap: wrap;
+    }
+}
