@@ -4,6 +4,8 @@ require_once __DIR__ . '/Conexion.php';
 
 class Usuario
 {
+    private $pdo;
+
     private $id_usuario;
     private $email;
     private $password;   // siempre se guarda el hash BCrypt, nunca el texto plano
@@ -14,200 +16,84 @@ class Usuario
     // Para un usuario nuevo se pasa la contraseña en texto plano y se cifra aquí
     public function __construct($email = null, $passwordPlano = null, $nombre = null, $rol = 'cliente', $id_usuario = null)
     {
+        $this->pdo = Conexion::getInstance()->getConexion();
         $this->id_usuario = $id_usuario;
         $this->email = $email;
         $this->nombre = $nombre;
-        $this->setRol($rol);
+        $this->rol = $rol;
 
         if ($passwordPlano !== null) {
-            $this->setPassword($passwordPlano);
+            $this->password = password_hash($passwordPlano, PASSWORD_BCRYPT);
         }
     }
 
-    // ---------- Getters ----------
-
-    public function getIdUsuario()
+    function getIdUsuario()
     {
         return $this->id_usuario;
     }
 
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    public function getNombre()
-    {
-        return $this->nombre;
-    }
-
-    public function getRol()
-    {
-        return $this->rol;
-    }
-
-    public function getAuthKey()
-    {
-        return $this->auth_key;
-    }
-
-    // ---------- Setters ----------
-
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-
-    public function setNombre($nombre)
-    {
-        $this->nombre = $nombre;
-    }
-
-    public function setRol($rol)
-    {
-        $this->rol = $rol;
-    }
-
-    // Recibe la contraseña en texto plano y guarda su hash BCrypt
-    public function setPassword($passwordPlano)
-    {
-        $this->password = password_hash($passwordPlano, PASSWORD_BCRYPT);
-    }
-
-    public function setAuthKey($auth_key)
-    {
-        $this->auth_key = $auth_key;
-    }
-
-    // ---------- CRUD ----------
-
     // Inserta el usuario y guarda en el objeto el id generado
-    public function insert()
+    function insertUsuario()
     {
-        $pdo = Conexion::getInstance()->getConexion();
+        $sql = "INSERT INTO usuario (email, password, nombre, rol, auth_key)
+                VALUES (:email, :password, :nombre, :rol, :auth_key)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':email', $this->email, PDO::PARAM_STR);
+        $stmt->bindParam(':password', $this->password, PDO::PARAM_STR);
+        $stmt->bindParam(':nombre', $this->nombre, PDO::PARAM_STR);
+        $stmt->bindParam(':rol', $this->rol, PDO::PARAM_STR);
+        $stmt->bindParam(':auth_key', $this->auth_key, PDO::PARAM_STR);
+        $stmt->execute();
 
-        try {
-            $stmt = $pdo->prepare(
-                "INSERT INTO usuario (email, password, nombre, rol, auth_key)
-                 VALUES (:email, :password, :nombre, :rol, :auth_key)"
-            );
-            $stmt->execute([
-                ":email"    => $this->email,
-                ":password" => $this->password,
-                ":nombre"   => $this->nombre,
-                ":rol"      => $this->rol,
-                ":auth_key" => $this->auth_key,
-            ]);
-            $this->id_usuario = (int) $pdo->lastInsertId();
-            return true;
-        } catch (PDOException $e) {
-            error_log("Error al insertar usuario: " . $e->getMessage());
-            return false;
-        }
+        $this->id_usuario = (int) $this->pdo->lastInsertId();
     }
 
-    // Guarda en la base de datos los datos actuales del objeto
-    public function update()
+    // Devuelve los datos del usuario (sin la contraseña ni el token) o false si no existe
+    function getUsuario()
     {
-        $pdo = Conexion::getInstance()->getConexion();
-
-        try {
-            $stmt = $pdo->prepare(
-                "UPDATE usuario
-                 SET email = :email, password = :password, nombre = :nombre, rol = :rol, auth_key = :auth_key
-                 WHERE id_usuario = :id_usuario"
-            );
-            $stmt->execute([
-                ":email"      => $this->email,
-                ":password"   => $this->password,
-                ":nombre"     => $this->nombre,
-                ":rol"        => $this->rol,
-                ":auth_key"   => $this->auth_key,
-                ":id_usuario" => $this->id_usuario,
-            ]);
-            return true;
-        } catch (PDOException $e) {
-            error_log("Error al actualizar usuario: " . $e->getMessage());
-            return false;
-        }
+        $sql = "SELECT id_usuario, email, nombre, rol FROM usuario WHERE id_usuario = :id_usuario";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id_usuario', $this->id_usuario, PDO::PARAM_INT);
+        $stmt->execute();
+        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $fila;
     }
 
     // Borra el usuario (si es cliente o mecánico, su fila en cliente/mecanico se borra en cascada)
-    public function delete()
+    function deleteUsuario()
     {
-        $pdo = Conexion::getInstance()->getConexion();
+        $sql = "DELETE FROM usuario WHERE id_usuario = :id_usuario";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id_usuario', $this->id_usuario, PDO::PARAM_INT);
+        $stmt->execute();
+    }
 
-        try {
-            $stmt = $pdo->prepare("DELETE FROM usuario WHERE id_usuario = :id_usuario");
-            $stmt->execute([":id_usuario" => $this->id_usuario]);
-            return $stmt->rowCount() > 0;
-        } catch (PDOException $e) {
-            // Por ejemplo, un cliente con vehículos no se puede borrar (ON DELETE RESTRICT)
-            error_log("Error al borrar usuario: " . $e->getMessage());
-            return false;
+    // Guarda en la base de datos los datos actuales del objeto (la contraseña no se toca)
+    function updateUsuario()
+    {
+        $sql = "UPDATE usuario SET email = :email, nombre = :nombre, rol = :rol WHERE id_usuario = :id_usuario";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':email', $this->email, PDO::PARAM_STR);
+        $stmt->bindParam(':nombre', $this->nombre, PDO::PARAM_STR);
+        $stmt->bindParam(':rol', $this->rol, PDO::PARAM_STR);
+        $stmt->bindParam(':id_usuario', $this->id_usuario, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    // Comprueba el email del objeto con la contraseña en texto plano.
+    // Devuelve los datos del usuario (sin la contraseña) o false si no coinciden
+    function loginUsuario($passwordPlano)
+    {
+        $sql = "SELECT id_usuario, email, password, nombre, rol FROM usuario WHERE email = :email";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':email', $this->email, PDO::PARAM_STR);
+        $stmt->execute();
+        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($fila && password_verify($passwordPlano, $fila['password'])) {
+            unset($fila['password']);
+            return $fila;
         }
-    }
-
-    // Datos del usuario listos para enviar como JSON (sin la contraseña ni el token)
-    public function toArray()
-    {
-        return [
-            "id_usuario" => $this->id_usuario,
-            "email"      => $this->email,
-            "nombre"     => $this->nombre,
-            "rol"        => $this->rol,
-        ];
-    }
-
-    // Devuelve todos los usuarios como array de arrays asociativos
-    public static function getArray()
-    {
-        $pdo = Conexion::getInstance()->getConexion();
-        $stmt = $pdo->query("SELECT id_usuario, email, nombre, rol FROM usuario ORDER BY id_usuario");
-        return $stmt->fetchAll();
-    }
-
-    // Busca un usuario por su id; devuelve un objeto Usuario o null
-    public static function getById($id_usuario)
-    {
-        $pdo = Conexion::getInstance()->getConexion();
-        $stmt = $pdo->prepare("SELECT * FROM usuario WHERE id_usuario = :id_usuario");
-        $stmt->execute([":id_usuario" => $id_usuario]);
-        $fila = $stmt->fetch();
-
-        return $fila ? self::desdeFila($fila) : null;
-    }
-
-    // Crea un objeto Usuario a partir de una fila de la tabla (con el hash ya calculado)
-    private static function desdeFila($fila)
-    {
-        $usuario = new self($fila["email"], null, $fila["nombre"], $fila["rol"], (int) $fila["id_usuario"]);
-        $usuario->password = $fila["password"];
-        $usuario->auth_key = $fila["auth_key"];
-        return $usuario;
-    }
-
-    // ---------- Login ----------
-
-    // Busca un usuario por su email; devuelve un objeto Usuario o null
-    public static function getByEmail($email)
-    {
-        $pdo = Conexion::getInstance()->getConexion();
-        $stmt = $pdo->prepare("SELECT * FROM usuario WHERE email = :email");
-        $stmt->execute([":email" => $email]);
-        $fila = $stmt->fetch();
-
-        return $fila ? self::desdeFila($fila) : null;
-    }
-
-    // Comprueba email y contraseña; devuelve el Usuario si son correctos o null si no
-    public static function login($email, $passwordPlano)
-    {
-        $usuario = self::getByEmail($email);
-
-        if ($usuario !== null && password_verify($passwordPlano, $usuario->password)) {
-            return $usuario;
-        }
-        return null;
+        return false;
     }
 }
