@@ -104,6 +104,38 @@
                         <label for="anio">Año</label>
                         <input type="number" id="anio" name="anio" placeholder="2019" min="1950" max="2100">
                     </div>
+
+                    <div class="campo">
+                        <label for="combustible">Combustible</label>
+                        <select id="combustible" name="combustible" required>
+                            <option value="">Elige uno</option>
+                            <option value="gasolina">Gasolina</option>
+                            <option value="diesel">Diésel</option>
+                            <option value="hibrido">Híbrido</option>
+                            <option value="hibrido_enchufable">Híbrido enchufable</option>
+                            <option value="electrico">Eléctrico</option>
+                            <option value="glp">GLP</option>
+                        </select>
+                    </div>
+
+                    <div class="campo">
+                        <label for="cambio">Cambio</label>
+                        <select id="cambio" name="cambio">
+                            <option value="">Sin indicar</option>
+                            <option value="manual">Manual</option>
+                            <option value="automatico">Automático</option>
+                        </select>
+                    </div>
+
+                    <div class="campo">
+                        <label for="kilometros">Kilómetros</label>
+                        <input type="number" id="kilometros" name="kilometros" placeholder="45200" min="0" step="1">
+                    </div>
+
+                    <div class="campo">
+                        <label for="bastidor">Nº de bastidor</label>
+                        <input type="text" id="bastidor" name="bastidor" placeholder="17 caracteres" minlength="17" maxlength="17" autocomplete="off">
+                    </div>
                 </div>
 
                 <div class="acciones">
@@ -121,7 +153,7 @@
                     </div>
                     <div>
                         <p class="vehiculo-nombre">Renault Clio</p>
-                        <p class="detalle">2016</p>
+                        <p class="detalle">2016 · Diésel · Manual · 118.500 km</p>
                     </div>
                     <div class="vehiculo-acciones">
                         <a href="#pedir" class="boton">Pedir cita</a>
@@ -141,7 +173,7 @@
                     </div>
                     <div>
                         <p class="vehiculo-nombre">Seat León</p>
-                        <p class="detalle">2019</p>
+                        <p class="detalle">2019 · Gasolina · Manual · 45.200 km</p>
                     </div>
                     <div class="vehiculo-acciones">
                         <a href="#pedir" class="boton">Pedir cita</a>
