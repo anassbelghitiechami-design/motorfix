@@ -65,6 +65,12 @@ CREATE TABLE vehiculo (
     marca       VARCHAR(50)  NOT NULL,
     modelo      VARCHAR(50)  NOT NULL,
     anio        SMALLINT UNSIGNED NULL,
+    combustible ENUM('gasolina','diesel','hibrido','hibrido_enchufable','electrico','glp')
+                NOT NULL,
+    cambio      ENUM('manual','automatico') NULL,
+    kilometros  INT UNSIGNED NULL,
+    bastidor    CHAR(17)     NULL,             -- número de bastidor (VIN)
+    CONSTRAINT uk_vehiculo_bastidor UNIQUE (bastidor),
     CONSTRAINT fk_vehiculo_cliente FOREIGN KEY (id_cliente)
         REFERENCES cliente (id_usuario)
         ON DELETE RESTRICT ON UPDATE CASCADE
@@ -159,10 +165,10 @@ INSERT INTO cliente (id_usuario, dni, telefono, calle, numero, cp, localidad) VA
     (4, '12345678A', '600111222', 'Calle Mayor', '10', '03201', 'Elche'),
     (5, '87654321B', '600333444', 'Av. Libertad', '25', '03202', 'Elche');
 
-INSERT INTO vehiculo (matricula, id_cliente, marca, modelo, anio) VALUES
-    ('1234KLM', 4, 'Seat',    'León',  2019),
-    ('5678BCD', 4, 'Renault', 'Clio',  2016),
-    ('9012FGH', 5, 'Ford',    'Focus', 2018);
+INSERT INTO vehiculo (matricula, id_cliente, marca, modelo, anio, combustible, cambio, kilometros, bastidor) VALUES
+    ('1234KLM', 4, 'Seat',    'León',  2019, 'gasolina', 'manual',      45200, 'VSSZZZ5FZKR123456'),
+    ('5678BCD', 4, 'Renault', 'Clio',  2016, 'diesel',   'manual',     118500, 'VF1RJA00X56789012'),
+    ('9012FGH', 5, 'Ford',    'Focus', 2018, 'hibrido',  'automatico',  63000, 'WF0XXXGCDXJ345678');
 
 INSERT INTO cita (id_cita, matricula, id_mecanico, fecha_hora, tipo_servicio, motivo, estado, horas, precio_hora) VALUES
     (1, '5678BCD', 3,    '2026-10-22 11:00:00', 'Revisión', 'Cambio de aceite',  'finalizada', 1.00, 45.00),
