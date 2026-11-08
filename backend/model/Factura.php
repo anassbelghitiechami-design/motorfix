@@ -52,34 +52,6 @@ class Factura
         return $fila;
     }
 
-    // Devuelve la factura de la cita del objeto o false si la cita todavía no está facturada
-    function getFacturaCita()
-    {
-        $sql = "SELECT numero, id_cita, fecha, base_imponible, iva_pct, cuota_iva, total FROM factura WHERE id_cita = :id_cita";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':id_cita', $this->id_cita, PDO::PARAM_INT);
-        $stmt->execute();
-        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $fila;
-    }
-
-    // Devuelve todas las facturas de un cliente (para el panel del cliente)
-    function getFacturasCliente($id_cliente)
-    {
-        $sql = "SELECT f.numero, f.id_cita, f.fecha, f.base_imponible, f.iva_pct, f.cuota_iva, f.total,
-                       c.matricula, v.marca, v.modelo
-                FROM factura f
-                JOIN cita c ON c.id_cita = f.id_cita
-                JOIN vehiculo v ON v.matricula = c.matricula
-                WHERE v.id_cliente = :id_cliente
-                ORDER BY f.fecha DESC";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':id_cliente', $id_cliente, PDO::PARAM_INT);
-        $stmt->execute();
-        $filas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $filas;
-    }
-
     // Guarda en la base de datos los datos actuales del objeto
     function updateFactura()
     {
