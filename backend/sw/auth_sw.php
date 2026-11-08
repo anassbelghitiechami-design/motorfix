@@ -85,6 +85,14 @@ switch ($request["action"]){
         }
         break;
 
+    case "logout":
+        //borramos los datos de la sesion y la cerramos
+        session_unset();
+        session_destroy();
+
+        $msg = "Sesion cerrada correctamente";
+        break;
+
     default:
         $success = false;
         $msg = "Accion no soportada";
