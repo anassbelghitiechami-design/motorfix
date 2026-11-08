@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../model/Usuario.php';
+require_once __DIR__ . '/../model/Cliente.php';
 
 //Iniciamos la sesion para poder guardar en $_SESSION quien ha hecho login
 session_start();
@@ -39,6 +40,48 @@ switch ($request["action"]){
         } else {
             $success = false;
             $msg = "Email o contraseña incorrectos";
+        }
+        break;
+
+    case "registro":
+        $cliente["email"]= $request["data"]["email"];
+        $cliente["password"]= $request["data"]["password"];
+        $cliente["nombre"]= $request["data"]["nombre"];
+        $cliente["dni"]= $request["data"]["dni"];
+        $cliente["telefono"]= $request["data"]["telefono"];
+        $cliente["calle"]= $request["data"]["calle"];
+        $cliente["numero"]= $request["data"]["numero"];
+        $cliente["cp"]= $request["data"]["cp"];
+        $cliente["localidad"]= $request["data"]["localidad"];
+
+        //primero se crea el usuario con rol cliente y luego sus datos de cliente con el mismo id
+        $usuario = new Usuario($cliente["email"], $cliente["password"], $cliente["nombre"], "cliente");
+
+        try {
+            $usuario->insertUsuario();
+
+            $nuevoCliente = new Cliente(
+                $usuario->getIdUsuario(),
+                $cliente["dni"],
+                $cliente["telefono"],
+                $cliente["calle"],
+                $cliente["numero"],
+                $cliente["cp"],
+                $cliente["localidad"]
+            );
+            $nuevoCliente->insertCliente();
+
+            unset($cliente["password"]); //la contraseña no se devuelve
+            $data = $cliente;
+            $msg = "Cliente registrado correctamente";
+        } catch (PDOException $e) {
+            //si el usuario se llego a crear pero el cliente no, lo borramos para no dejarlo a medias
+            if ($usuario->getIdUsuario()) {
+                $usuario->deleteUsuario();
+            }
+            error_log("Error al registrar cliente: " . $e->getMessage());
+            $success = false;
+            $msg = "Error al registrar el cliente (puede que el email o el DNI ya existan)";
         }
         break;
 
