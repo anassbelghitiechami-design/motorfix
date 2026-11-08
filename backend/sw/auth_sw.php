@@ -93,6 +93,19 @@ switch ($request["action"]){
         $msg = "Sesion cerrada correctamente";
         break;
 
+    case "sesion":
+        //las paginas preguntan si hay alguien logueado y con que rol
+        if (isset($_SESSION["id_usuario"])) {
+            $data["id_usuario"] = $_SESSION["id_usuario"];
+            $data["nombre"] = $_SESSION["nombre"];
+            $data["rol"] = $_SESSION["rol"];
+            $msg = "Sesion iniciada";
+        } else {
+            $success = false;
+            $msg = "No has iniciado sesion";
+        }
+        break;
+
     default:
         $success = false;
         $msg = "Accion no soportada";
