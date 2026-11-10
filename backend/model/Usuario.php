@@ -82,6 +82,7 @@ class Usuario
 
     // Comprueba el email del objeto con la contraseña en texto plano.
     // Devuelve los datos del usuario (sin la contraseña) o false si no coinciden
+    //etsa funcion sirve ver si el usuario u contrasña q escriben son correctos
     function loginUsuario($passwordPlano)
     {
         $sql = "SELECT id_usuario, email, password, nombre, rol FROM usuario WHERE email = :email";
