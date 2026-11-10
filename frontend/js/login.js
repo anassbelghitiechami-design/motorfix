@@ -1,10 +1,9 @@
 const url = "../backend/sw/auth_sw.php";
 
-const formLogin = document.getElementById("formLogin");
-//al formulario le añadimos un escuchador tipo submit
-// El evento "submit" se activa cuando se pulsa el boton Entrar y llama a la funcion login()
-formLogin.addEventListener("submit", (event) => {
-    event.preventDefault(); //para que el formulario no recargue la pagina
+const buttonEntrar = document.getElementById("entrar");
+//al boton le añadimos un escuchador tipo click
+// El evento "click" se activa en el momento que se hace click en el boton Entrar y llama a la funcion login()
+buttonEntrar.addEventListener("click", (event) => {
     login();
 });
 
@@ -33,13 +32,13 @@ function login(){
         if (data.success) {
             //segun el rol del usuario lo mandamos a su panel
             if (data.data.rol == "cliente") {
-                window.location.href = "cliente.html";
+                location.href = "cliente.html";
             } else if (data.data.rol == "oficina") {
-                window.location.href = "oficina.html";
+                location.href = "oficina.html";
             } else if (data.data.rol == "mecanico") {
-                window.location.href = "mecanico.html";
+                location.href = "mecanico.html";
             } else if (data.data.rol == "admin") {
-                window.location.href = "admin.html";
+                location.href = "admin.html";
             }
         } else {
             mostrarMensaje(data.msg);

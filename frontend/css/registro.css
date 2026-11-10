@@ -99,17 +99,6 @@ legend {
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.4fr);
 }
 
-/* ---------- Error de un campo ---------- */
-
-.campo-error input {
-    border-color: var(--rojo);
-}
-
-.texto-error {
-    font-size: 13px;
-    color: var(--rojo);
-}
-
 /* ---------- Botones ---------- */
 
 .acciones {

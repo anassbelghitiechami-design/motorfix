@@ -1,10 +1,11 @@
 const url = "../backend/sw/auth_sw.php";
 
 const formRegistro = document.getElementById("formRegistro");
-//al formulario le añadimos un escuchador tipo submit
-// El evento "submit" se activa cuando se pulsa el boton Crear cuenta y llama a la funcion registro()
-formRegistro.addEventListener("submit", (event) => {
-    event.preventDefault(); //para que el formulario no recargue la pagina
+
+const buttonCrear = document.getElementById("crear");
+//al boton le añadimos un escuchador tipo click
+// El evento "click" se activa en el momento que se hace click en el boton Crear cuenta y llama a la funcion registro()
+buttonCrear.addEventListener("click", (event) => {
     registro();
 });
 
@@ -22,10 +23,10 @@ function registro(){
     cliente.localidad = document.getElementById("localidad").value.trim();
     cliente.email = document.getElementById("email").value.trim();
     cliente.password = document.getElementById("password").value;
-    let password2 = document.getElementById("password2").value;
 
-    //antes de enviar nada comprobamos los campos
-    if (!validarCampos(cliente, password2)) {
+    //si falta algun campo obligatorio no se envia nada
+    if (cliente.dni == "" || cliente.nombre == "" || cliente.email == "" || cliente.password == "") {
+        mostrarMensaje("Rellena todos los campos obligatorios", "error");
         return;
     }
 
@@ -59,39 +60,6 @@ function registro(){
         console.error("Error:", error);
         mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
-}
-
-
-//comprueba que los campos obligatorios estan rellenos y que las contraseñas coinciden
-function validarCampos(cliente, password2){
-    const errorPassword = document.getElementById("errorPassword");
-    errorPassword.classList.add("oculto");
-    document.getElementById("password2").parentElement.classList.remove("campo-error");
-
-    if (cliente.dni == "" || cliente.telefono == "" || cliente.nombre == "" || cliente.email == "" || cliente.password == "") {
-        mostrarMensaje("Rellena todos los campos obligatorios", "error");
-        return false;
-    }
-
-    //DNI: 8 numeros y una letra
-    if (!/^[0-9]{8}[A-Za-z]$/.test(cliente.dni)) {
-        mostrarMensaje("El DNI tiene que tener 8 números y una letra", "error");
-        return false;
-    }
-
-    if (!cliente.email.includes("@")) {
-        mostrarMensaje("El email no es válido", "error");
-        return false;
-    }
-
-    if (cliente.password != password2) {
-        errorPassword.classList.remove("oculto");
-        document.getElementById("password2").parentElement.classList.add("campo-error");
-        mostrarMensaje("Las contraseñas no coinciden", "error");
-        return false;
-    }
-
-    return true;
 }
 
 
