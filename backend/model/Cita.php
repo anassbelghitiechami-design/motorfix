@@ -63,6 +63,22 @@ class Cita
         return $fila;
     }
 
+    // Devuelve todas las citas de los vehiculos de un cliente, con la marca y el modelo (array vacío si no tiene)
+    // La cita no guarda el cliente, por eso se une con vehiculo para saber de quién es
+    function getCitasCliente($id_cliente)
+    {
+        $sql = "SELECT c.id_cita, c.matricula, v.marca, v.modelo, c.fecha_hora, c.tipo_servicio, c.motivo, c.estado
+                FROM cita c
+                JOIN vehiculo v ON v.matricula = c.matricula
+                WHERE v.id_cliente = :id_cliente
+                ORDER BY c.fecha_hora DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id_cliente', $id_cliente, PDO::PARAM_INT);
+        $stmt->execute();
+        $filas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $filas;
+    }
+
     // Guarda en la base de datos los datos actuales del objeto
     function updateCita()
     {
