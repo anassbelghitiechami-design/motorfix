@@ -30,6 +30,17 @@ function comprobarSesion(rolPagina){
             if (nombre) {
                 nombre.textContent = data.data.nombre;
             }
+
+            //y en el circulo de la cabecera las iniciales (Ana Garcia -> AG)
+            const iniciales = document.getElementById("iniciales");
+            if (iniciales) {
+                let partes = data.data.nombre.split(" ");
+                let texto = partes[0].charAt(0);
+                if (partes.length > 1) {
+                    texto = texto + partes[1].charAt(0);
+                }
+                iniciales.textContent = texto.toUpperCase();
+            }
         }
     })
     .catch(function (error) {
