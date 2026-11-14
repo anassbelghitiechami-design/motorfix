@@ -3,8 +3,23 @@
 
 const urlVehiculo = "../backend/sw/vehiculo_sw.php";
 
+//matricula del vehiculo que se esta editando. Si es null, el formulario es para añadir uno nuevo
+let matriculaEditando = null;
+
 //al abrir la pagina pedimos los vehiculos del cliente
 listarVehiculos();
+
+//al pulsar "+ Añadir vehículo" dejamos el formulario vacio (el enlace ya lo muestra al ir a #nuevoVehiculo)
+const enlaceAnadir = document.getElementById("anadirVehiculo");
+enlaceAnadir.addEventListener("click", (event) => {
+    prepararFormulario(null);
+});
+
+//al boton Guardar vehículo le añadimos un escuchador tipo click
+const buttonGuardarVehiculo = document.getElementById("guardarVehiculo");
+buttonGuardarVehiculo.addEventListener("click", (event) => {
+    guardarVehiculo();
+});
 
 
 //pide al servidor los vehiculos del cliente que ha hecho login y los pinta
@@ -75,8 +90,85 @@ function pintarVehiculos(vehiculos){
         tarjeta.querySelector(".vehiculo-nombre").textContent = vehiculo.marca + " " + vehiculo.modelo;
         tarjeta.querySelector(".detalle").textContent = vehiculo.anio ? vehiculo.anio : "Año sin indicar";
 
+        //al pulsar el lapiz se rellena el formulario con este vehiculo y se muestra
+        tarjeta.querySelector(".boton-editar").addEventListener("click", (event) => {
+            prepararFormulario(vehiculo);
+            location.href = "#nuevoVehiculo";
+        });
+
         lista.appendChild(tarjeta);
     }
+}
+
+
+//deja el formulario listo para añadir (vehiculo = null) o para editar el vehiculo que se le pasa
+function prepararFormulario(vehiculo){
+    const titulo = document.getElementById("tituloFormVehiculo");
+    const matricula = document.getElementById("matricula");
+
+    if (vehiculo == null) {
+        matriculaEditando = null;
+        titulo.textContent = "Añadir vehículo";
+        document.getElementById("nuevoVehiculo").reset();
+        matricula.disabled = false;
+    } else {
+        matriculaEditando = vehiculo.matricula;
+        titulo.textContent = "Editar vehículo";
+        matricula.value = vehiculo.matricula;
+        matricula.disabled = true; //la matricula es la clave, no se puede cambiar
+        document.getElementById("marca").value = vehiculo.marca;
+        document.getElementById("modelo").value = vehiculo.modelo;
+        document.getElementById("anio").value = vehiculo.anio ? vehiculo.anio : "";
+    }
+}
+
+
+//envia el formulario: si se esta editando un vehiculo hace "editar" y si no "insertar"
+function guardarVehiculo(){
+    let vehiculo = {};
+    vehiculo.matricula = document.getElementById("matricula").value.trim();
+    vehiculo.marca = document.getElementById("marca").value.trim();
+    vehiculo.modelo = document.getElementById("modelo").value.trim();
+    vehiculo.anio = document.getElementById("anio").value;
+
+    if (vehiculo.matricula == "" || vehiculo.marca == "" || vehiculo.modelo == "") {
+        mostrarMensaje("Rellena la matrícula, la marca y el modelo", "error");
+        return;
+    }
+
+    let request = {};
+    if (matriculaEditando == null) {
+        request.action = "insertar";
+    } else {
+        request.action = "editar";
+        vehiculo.matricula = matriculaEditando;
+    }
+    request.data = vehiculo;
+
+    fetch(urlVehiculo, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then((res) => res.json())
+    .then((response) => {
+        console.log("Success:", response);
+
+        if (response.success) {
+            prepararFormulario(null);
+            location.href = "#vehiculos"; //al quitar #nuevoVehiculo el formulario se esconde
+            mostrarMensaje(response.msg, "exito");
+            listarVehiculos(); //volvemos a pedir la lista para que salga el cambio
+        } else {
+            mostrarMensaje(response.msg, "error");
+        }
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
+    });
 }
 
 

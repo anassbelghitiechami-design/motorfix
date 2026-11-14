@@ -77,12 +77,12 @@
         <section id="vehiculos" class="vehiculos" aria-labelledby="tituloVehiculos">
             <div class="seccion-cabecera">
                 <h2 id="tituloVehiculos">Mis vehículos</h2>
-                <a href="#nuevoVehiculo" class="boton boton-secundario">+ Añadir vehículo</a>
+                <a href="#nuevoVehiculo" class="boton boton-secundario" id="anadirVehiculo">+ Añadir vehículo</a>
             </div>
 
             <!-- Formulario para añadir o editar un vehículo (se muestra al pulsar "+ Añadir vehículo") -->
             <form id="nuevoVehiculo" class="tarjeta form-vehiculo" novalidate>
-                <h3>Añadir vehículo</h3>
+                <h3 id="tituloFormVehiculo">Añadir vehículo</h3>
 
                 <div class="rejilla-campos">
                     <div class="campo">
@@ -108,7 +108,7 @@
 
                 <div class="acciones">
                     <a href="#vehiculos" class="boton boton-secundario">Cancelar</a>
-                    <button type="submit" class="boton">Guardar vehículo</button>
+                    <button type="button" class="boton" id="guardarVehiculo">Guardar vehículo</button>
                 </div>
             </form>
 
