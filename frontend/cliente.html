@@ -52,16 +52,13 @@
         <div id="mensaje" class="mensaje oculto" role="alert"></div>
 
         <!-- ---------- Reparación en curso ---------- -->
-        <section class="reparacion" aria-labelledby="tituloReparacion">
+        <!-- Solo se ve si alguna cita esta en_curso (cliente.js le quita la clase oculto) -->
+        <section id="reparacion" class="reparacion oculto" aria-labelledby="tituloReparacion">
             <div class="reparacion-cabecera">
                 <div>
                     <p class="etiqueta">Reparación en curso</p>
-                    <h2 id="tituloReparacion">Renault Clio · 5678 BCD</h2>
-                    <p class="detalle">Cambio de aceite · Mecánico: [MECÁNICO] · Entrada 22/10/2026</p>
-                </div>
-                <div class="presupuesto">
-                    <p>Presupuesto actual</p>
-                    <p class="importe">113,01 €</p>
+                    <h2 id="tituloReparacion"></h2>
+                    <p class="detalle" id="detalleReparacion"></p>
                 </div>
             </div>
 
@@ -126,10 +123,8 @@
 
                     <div class="campo">
                         <label for="vehiculoCita">Vehículo</label>
-                        <select id="vehiculoCita" name="matricula" required>
-                            <option value="1234 KLM">1234 KLM · Seat León</option>
-                            <option value="5678 BCD">5678 BCD · Renault Clio</option>
-                        </select>
+                        <!-- las opciones las pone cliente.js con los vehiculos del cliente -->
+                        <select id="vehiculoCita" name="matricula" required></select>
                     </div>
 
                     <fieldset class="campo servicios">
@@ -166,55 +161,24 @@
                         <textarea id="motivo" name="motivo" rows="3" placeholder="Ruido al frenar, testigo encendido…"></textarea>
                     </div>
 
-                    <button type="submit" class="boton">Solicitar cita</button>
+                    <button type="button" class="boton" id="solicitarCita">Solicitar cita</button>
                 </form>
             </section>
 
             <div class="columna-listas">
 
-                <!-- Próximas citas (las pintará cliente.js) -->
+                <!-- Citas del cliente (las pinta cliente.js) -->
                 <section id="citas" class="tarjeta" aria-labelledby="tituloCitas">
-                    <h2 id="tituloCitas">Próximas citas</h2>
-                    <ul id="listaCitas" class="lista">
-                        <li class="fila">
-                            <p class="fecha-cita"><span class="dia">28</span> <span class="mes">oct</span></p>
-                            <div class="fila-texto">
-                                <p class="fila-titulo">Ruido al frenar</p>
-                                <p class="detalle">Seat León · 09:30</p>
-                            </div>
-                            <span class="estado estado-pendiente">Pendiente</span>
-                        </li>
-                        <li class="fila">
-                            <p class="fecha-cita"><span class="dia">15</span> <span class="mes">nov</span></p>
-                            <div class="fila-texto">
-                                <p class="fila-titulo">Pre-ITV</p>
-                                <p class="detalle">Seat León · 16:00</p>
-                            </div>
-                            <span class="estado estado-confirmada">Confirmada</span>
-                        </li>
-                    </ul>
+                    <h2 id="tituloCitas">Mis citas</h2>
+                    <ul id="listaCitas" class="lista"></ul>
                 </section>
 
                 <!-- Facturas (las pintará cliente.js) -->
                 <section id="facturas" class="tarjeta" aria-labelledby="tituloFacturas">
                     <h2 id="tituloFacturas">Facturas</h2>
+                    <!-- Las facturas se cargarán en la semana 5 -->
                     <ul id="listaFacturas" class="lista">
-                        <li class="fila">
-                            <div class="fila-texto">
-                                <p class="fila-titulo">Factura 2026-0001</p>
-                                <p class="detalle">Renault Clio · Neumáticos · 02/09/2026</p>
-                            </div>
-                            <p class="total">286,50 €</p>
-                            <a href="#" class="boton-ver">Ver</a>
-                        </li>
-                        <li class="fila">
-                            <div class="fila-texto">
-                                <p class="fila-titulo">Factura 2026-0000</p>
-                                <p class="detalle">Seat León · Revisión · 14/06/2026</p>
-                            </div>
-                            <p class="total">142,30 €</p>
-                            <a href="#" class="boton-ver">Ver</a>
-                        </li>
+                        <li class="fila"><p class="detalle">Todavía no tienes facturas.</p></li>
                     </ul>
                 </section>
 

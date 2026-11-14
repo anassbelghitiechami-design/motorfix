@@ -131,6 +131,11 @@ p {
     gap: 24px;
 }
 
+/* .reparacion tiene display: flex, asi que hace falta esta regla para poder esconderla */
+.reparacion.oculto {
+    display: none;
+}
+
 .reparacion-cabecera {
     display: flex;
     justify-content: space-between;
@@ -366,6 +371,21 @@ p {
 .estado-confirmada {
     background: #dbeafe;
     color: #1e40af;
+}
+
+.estado-rechazada {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.estado-en_curso {
+    background: var(--rojo);
+    color: #ffffff;
+}
+
+.estado-finalizada {
+    border: 1px solid var(--borde-campo);
+    color: var(--texto-secundario);
 }
 
 /* ---------- Cita previa, citas y facturas ---------- */

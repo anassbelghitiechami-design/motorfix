@@ -2,12 +2,23 @@
 //Se carga en cliente.html despues de sesion.js
 
 const urlVehiculo = "../backend/sw/vehiculo_sw.php";
+const urlCita = "../backend/sw/cita_sw.php";
 
 //matricula del vehiculo que se esta editando. Si es null, el formulario es para añadir uno nuevo
 let matriculaEditando = null;
 
-//al abrir la pagina pedimos los vehiculos del cliente
+//al abrir la pagina pedimos los vehiculos y las citas del cliente
 listarVehiculos();
+listarCitas();
+
+//la fecha de la cita no puede ser anterior a hoy (toISOString da 2026-11-14T..., nos quedamos con la fecha)
+document.getElementById("fecha").min = new Date().toISOString().substring(0, 10);
+
+//al boton Solicitar cita le añadimos un escuchador tipo click
+const buttonSolicitar = document.getElementById("solicitarCita");
+buttonSolicitar.addEventListener("click", (event) => {
+    solicitarCita();
+});
 
 //al pulsar "+ Añadir vehículo" dejamos el formulario vacio (el enlace ya lo muestra al ir a #nuevoVehiculo)
 const enlaceAnadir = document.getElementById("anadirVehiculo");
@@ -56,6 +67,9 @@ function pintarVehiculos(vehiculos){
     const lista = document.getElementById("listaVehiculos");
     lista.innerHTML = ""; //borramos lo que hubiera antes
 
+    //el desplegable del formulario de cita tiene los mismos vehiculos
+    rellenarSelectVehiculos(vehiculos);
+
     if (vehiculos.length == 0) {
         lista.innerHTML = '<p class="detalle">Todavía no tienes vehículos. Añade uno para poder pedir cita.</p>';
         return;
@@ -89,6 +103,11 @@ function pintarVehiculos(vehiculos){
         tarjeta.querySelector(".matricula").textContent = vehiculo.matricula;
         tarjeta.querySelector(".vehiculo-nombre").textContent = vehiculo.marca + " " + vehiculo.modelo;
         tarjeta.querySelector(".detalle").textContent = vehiculo.anio ? vehiculo.anio : "Año sin indicar";
+
+        //al pulsar "Pedir cita" se deja elegido este vehiculo en el formulario de cita
+        tarjeta.querySelector(".boton").addEventListener("click", (event) => {
+            document.getElementById("vehiculoCita").value = vehiculo.matricula;
+        });
 
         //al pulsar el lapiz se rellena el formulario con este vehiculo y se muestra
         tarjeta.querySelector(".boton-editar").addEventListener("click", (event) => {
@@ -207,6 +226,168 @@ function borrarVehiculo(vehiculo){
             listarVehiculos();
         } else {
             mostrarMensaje(response.msg, "error"); //por ejemplo si el vehiculo tiene citas
+        }
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
+    });
+}
+
+
+//pone una opcion en el desplegable de la cita por cada vehiculo
+function rellenarSelectVehiculos(vehiculos){
+    const select = document.getElementById("vehiculoCita");
+    select.innerHTML = "";
+
+    for (let i = 0; i < vehiculos.length; i++) {
+        const opcion = document.createElement("option");
+        opcion.value = vehiculos[i].matricula;
+        opcion.textContent = vehiculos[i].matricula + " · " + vehiculos[i].marca + " " + vehiculos[i].modelo;
+        select.appendChild(opcion);
+    }
+}
+
+
+//pide al servidor las citas del cliente y las pinta
+function listarCitas(){
+    let request = {};
+    request.action = "listar";
+
+    fetch(urlCita, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+
+        if (data.success) {
+            pintarCitas(data.data);
+        } else {
+            mostrarMensaje(data.msg, "error");
+        }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
+    });
+}
+
+
+//crea una fila por cada cita en #listaCitas con su fecha, su vehiculo y su estado
+function pintarCitas(citas){
+    const lista = document.getElementById("listaCitas");
+    lista.innerHTML = "";
+
+    //textos que se enseñan para cada estado de la BD
+    const textosEstado = {
+        pendiente: "Pendiente",
+        confirmada: "Confirmada",
+        rechazada: "Rechazada",
+        en_curso: "En el taller",
+        finalizada: "Finalizada"
+    };
+    const meses = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+
+    //la reparacion en curso solo se enseña si hay alguna cita en_curso
+    document.getElementById("reparacion").classList.add("oculto");
+
+    if (citas.length == 0) {
+        lista.innerHTML = '<li class="fila"><p class="detalle">Todavía no has pedido ninguna cita.</p></li>';
+        return;
+    }
+
+    for (let i = 0; i < citas.length; i++) {
+        const cita = citas[i];
+
+        //fecha_hora viene como "2026-10-28 09:30:00"
+        const partes = cita.fecha_hora.split(" ");
+        const fecha = partes[0].split("-");      //["2026", "10", "28"]
+        const hora = partes[1].substring(0, 5);  //"09:30"
+
+        const fila = document.createElement("li");
+        fila.className = "fila";
+        fila.innerHTML = `
+            <p class="fecha-cita"><span class="dia"></span> <span class="mes"></span></p>
+            <div class="fila-texto">
+                <p class="fila-titulo"></p>
+                <p class="detalle"></p>
+            </div>
+            <span class="estado"></span>
+        `;
+
+        fila.querySelector(".dia").textContent = fecha[2];
+        fila.querySelector(".mes").textContent = meses[parseInt(fecha[1]) - 1];
+        //si el cliente escribio un motivo se enseña ese, si no el tipo de servicio
+        fila.querySelector(".fila-titulo").textContent = cita.motivo ? cita.motivo : cita.tipo_servicio;
+        fila.querySelector(".detalle").textContent = cita.marca + " " + cita.modelo + " · " + cita.tipo_servicio + " · " + hora;
+
+        const estado = fila.querySelector(".estado");
+        estado.textContent = textosEstado[cita.estado];
+        estado.classList.add("estado-" + cita.estado);
+
+        lista.appendChild(fila);
+
+        if (cita.estado == "en_curso") {
+            pintarReparacion(cita, fecha);
+        }
+    }
+}
+
+
+//rellena el recuadro de "Reparación en curso" con la cita que esta en el taller
+function pintarReparacion(cita, fecha){
+    document.getElementById("tituloReparacion").textContent = cita.marca + " " + cita.modelo + " · " + cita.matricula;
+    document.getElementById("detalleReparacion").textContent = cita.tipo_servicio + " · Entrada " + fecha[2] + "/" + fecha[1] + "/" + fecha[0];
+    document.getElementById("reparacion").classList.remove("oculto");
+}
+
+
+//envia la solicitud de cita previa
+function solicitarCita(){
+    let cita = {};
+    cita.matricula = document.getElementById("vehiculoCita").value;
+    cita.fecha = document.getElementById("fecha").value;
+    cita.hora = document.getElementById("hora").value;
+    //de los radio buttons cogemos el que esta marcado
+    cita.tipo_servicio = document.querySelector('input[name="tipo_servicio"]:checked').value;
+    cita.motivo = document.getElementById("motivo").value.trim();
+
+    if (cita.matricula == "") {
+        mostrarMensaje("Primero añade un vehículo para poder pedir cita", "error");
+        return;
+    }
+
+    if (cita.fecha == "" || cita.hora == "") {
+        mostrarMensaje("Elige la fecha y la hora de la cita", "error");
+        return;
+    }
+
+    let request = {};
+    request.action = "solicitar";
+    request.data = cita;
+
+    fetch(urlCita, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then((res) => res.json())
+    .then((response) => {
+        console.log("Success:", response);
+
+        if (response.success) {
+            mostrarMensaje(response.msg, "exito");
+            document.getElementById("formCita").reset();
+            listarCitas(); //para que salga la nueva cita en la lista
+        } else {
+            mostrarMensaje(response.msg, "error");
         }
     })
     .catch((error) => {
