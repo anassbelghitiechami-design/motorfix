@@ -96,6 +96,11 @@ function pintarVehiculos(vehiculos){
             location.href = "#nuevoVehiculo";
         });
 
+        //al pulsar la papelera se borra el vehiculo (preguntando antes)
+        tarjeta.querySelector(".boton-borrar").addEventListener("click", (event) => {
+            borrarVehiculo(vehiculo);
+        });
+
         lista.appendChild(tarjeta);
     }
 }
@@ -163,6 +168,45 @@ function guardarVehiculo(){
             listarVehiculos(); //volvemos a pedir la lista para que salga el cambio
         } else {
             mostrarMensaje(response.msg, "error");
+        }
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
+    });
+}
+
+
+//pide confirmacion y si el usuario acepta borra el vehiculo
+function borrarVehiculo(vehiculo){
+    //confirm enseña una ventana con Aceptar y Cancelar y devuelve true o false
+    let seguro = confirm("¿Seguro que quieres borrar el " + vehiculo.marca + " " + vehiculo.modelo + " (" + vehiculo.matricula + ")?");
+    if (!seguro) {
+        return;
+    }
+
+    let request = {};
+    request.action = "borrar";
+    request.data = {
+        matricula: vehiculo.matricula
+    };
+
+    fetch(urlVehiculo, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then((res) => res.json())
+    .then((response) => {
+        console.log("Success:", response);
+
+        if (response.success) {
+            mostrarMensaje(response.msg, "exito");
+            listarVehiculos();
+        } else {
+            mostrarMensaje(response.msg, "error"); //por ejemplo si el vehiculo tiene citas
         }
     })
     .catch((error) => {
