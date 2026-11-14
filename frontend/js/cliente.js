@@ -25,10 +25,13 @@ function listarVehiculos(){
 
         if (data.success) {
             pintarVehiculos(data.data);
+        } else {
+            mostrarMensaje(data.msg, "error");
         }
     })
     .catch(function (error) {
         console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
@@ -74,4 +77,15 @@ function pintarVehiculos(vehiculos){
 
         lista.appendChild(tarjeta);
     }
+}
+
+
+//enseña el msg del servidor en el div de mensaje (en vez de un alert). tipo puede ser "error" o "exito"
+function mostrarMensaje(texto, tipo){
+    const mensaje = document.getElementById("mensaje");
+    mensaje.textContent = texto;
+    mensaje.classList.remove("oculto", "mensaje-error", "mensaje-exito");
+    mensaje.classList.add("mensaje-" + tipo);
+    //el div esta arriba del todo, asi que lo llevamos a la vista para que se lea
+    mensaje.scrollIntoView({ behavior: "smooth", block: "center" });
 }
