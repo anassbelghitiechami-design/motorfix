@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotorFix · Mi taller</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/cliente.css">
+</head>
+<body>
+
+    <!-- ---------- Cabecera ---------- -->
+    <header class="cabecera-panel">
+        <a class="logo" href="cliente.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"></path>
+            </svg>
+            <span>MOTORFIX</span>
+        </a>
+
+        <nav class="menu" aria-label="Secciones">
+            <a href="#inicio" class="activo">Inicio</a>
+            <a href="#vehiculos">Mis vehículos</a>
+            <a href="#citas">Citas</a>
+            <a href="#facturas">Facturas</a>
+        </nav>
+
+        <div class="usuario">
+            <span class="avatar" id="iniciales"></span>
+            <a href="login.html" id="salir">Salir</a>
+        </div>
+    </header>
+
+    <main id="inicio" class="panel">
+
+        <!-- ---------- Saludo ---------- -->
+        <div class="saludo">
+            <div>
+                <p>Hola, <span id="nombreUsuario">[NOMBRE]</span></p>
+                <h1>¿Qué necesita tu coche hoy?</h1>
+            </div>
+            <a href="#pedir" class="boton boton-icono">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+                    <path d="M3 10h18M8 3v4M16 3v4"></path>
+                </svg>
+                Pedir cita
+            </a>
+        </div>
+
+        <!-- Aquí se mostrará el msg del servidor (éxito o error) -->
+        <div id="mensaje" class="mensaje oculto" role="alert"></div>
+
+        <!-- ---------- Reparación en curso ---------- -->
+        <!-- Solo se ve si alguna cita esta en_curso (cliente.js le quita la clase oculto) -->
+        <section id="reparacion" class="reparacion oculto" aria-labelledby="tituloReparacion">
+            <div class="reparacion-cabecera">
+                <div>
+                    <p class="etiqueta">Reparación en curso</p>
+                    <h2 id="tituloReparacion"></h2>
+                    <p class="detalle" id="detalleReparacion"></p>
+                </div>
+            </div>
+
+            <ol class="pasos" aria-label="Estado de la reparación">
+                <li class="hecho">Solicitada</li>
+                <li class="hecho">Confirmada</li>
+                <li class="hecho actual">En el taller</li>
+                <li>Lista para recoger</li>
+            </ol>
+        </section>
+
+        <!-- ---------- Mis vehículos ---------- -->
+        <section id="vehiculos" class="vehiculos" aria-labelledby="tituloVehiculos">
+            <div class="seccion-cabecera">
+                <h2 id="tituloVehiculos">Mis vehículos</h2>
+                <a href="#nuevoVehiculo" class="boton boton-secundario" id="anadirVehiculo">+ Añadir vehículo</a>
+            </div>
+
+            <!-- Formulario para añadir o editar un vehículo (se muestra al pulsar "+ Añadir vehículo") -->
+            <form id="nuevoVehiculo" class="tarjeta form-vehiculo" novalidate>
+                <h3 id="tituloFormVehiculo">Añadir vehículo</h3>
+
+                <div class="rejilla-campos">
+                    <div class="campo">
+                        <label for="matricula">Matrícula</label>
+                        <input type="text" id="matricula" name="matricula" placeholder="1234 ABC" maxlength="10" required>
+                    </div>
+
+                    <div class="campo">
+                        <label for="marca">Marca</label>
+                        <input type="text" id="marca" name="marca" placeholder="Seat" maxlength="50" required>
+                    </div>
+
+                    <div class="campo">
+                        <label for="modelo">Modelo</label>
+                        <input type="text" id="modelo" name="modelo" placeholder="León" maxlength="50" required>
+                    </div>
+
+                    <div class="campo">
+                        <label for="anio">Año</label>
+                        <input type="number" id="anio" name="anio" placeholder="2019" min="1950" max="2100">
+                    </div>
+                </div>
+
+                <div class="acciones">
+                    <a href="#vehiculos" class="boton boton-secundario">Cancelar</a>
+                    <button type="button" class="boton" id="guardarVehiculo">Guardar vehículo</button>
+                </div>
+            </form>
+
+            <!-- Lista de vehículos (cliente.js la pintará con los datos de vehiculo_sw.php) -->
+            <div id="listaVehiculos" class="lista-vehiculos"></div>
+        </section>
+
+        <!-- ---------- Cita previa + citas + facturas ---------- -->
+        <div class="columnas">
+
+            <!-- Formulario de cita previa (lo enviará cliente.js con fetch a cita_sw.php) -->
+            <section id="pedir" class="tarjeta columna-cita" aria-labelledby="tituloPedir">
+                <form id="formCita" novalidate>
+                    <h2 id="tituloPedir">Pedir cita previa</h2>
+
+                    <div class="campo">
+                        <label for="vehiculoCita">Vehículo</label>
+                        <!-- las opciones las pone cliente.js con los vehiculos del cliente -->
+                        <select id="vehiculoCita" name="matricula" required></select>
+                    </div>
+
+                    <fieldset class="campo servicios">
+                        <legend>Tipo de servicio</legend>
+                        <div class="opciones">
+                            <input type="radio" id="servRevision" name="tipo_servicio" value="Revisión" checked>
+                            <label for="servRevision">Revisión</label>
+
+                            <input type="radio" id="servAveria" name="tipo_servicio" value="Avería">
+                            <label for="servAveria">Avería</label>
+
+                            <input type="radio" id="servNeumaticos" name="tipo_servicio" value="Neumáticos">
+                            <label for="servNeumaticos">Neumáticos</label>
+
+                            <input type="radio" id="servItv" name="tipo_servicio" value="Pre-ITV">
+                            <label for="servItv">Pre-ITV</label>
+                        </div>
+                    </fieldset>
+
+                    <div class="rejilla-campos">
+                        <div class="campo">
+                            <label for="fecha">Fecha</label>
+                            <input type="date" id="fecha" name="fecha" required>
+                        </div>
+
+                        <div class="campo">
+                            <label for="hora">Hora</label>
+                            <input type="time" id="hora" name="hora" required>
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label for="motivo">Cuéntanos qué le pasa</label>
+                        <textarea id="motivo" name="motivo" rows="3" placeholder="Ruido al frenar, testigo encendido…"></textarea>
+                    </div>
+
+                    <button type="button" class="boton" id="solicitarCita">Solicitar cita</button>
+                </form>
+            </section>
+
+            <div class="columna-listas">
+
+                <!-- Citas del cliente (las pinta cliente.js) -->
+                <section id="citas" class="tarjeta" aria-labelledby="tituloCitas">
+                    <h2 id="tituloCitas">Mis citas</h2>
+                    <ul id="listaCitas" class="lista"></ul>
+                </section>
+
+                <!-- Facturas (las pintará cliente.js) -->
+                <section id="facturas" class="tarjeta" aria-labelledby="tituloFacturas">
+                    <h2 id="tituloFacturas">Facturas</h2>
+                    <!-- Las facturas se cargarán en la semana 5 -->
+                    <ul id="listaFacturas" class="lista">
+                        <li class="fila"><p class="detalle">Todavía no tienes facturas.</p></li>
+                    </ul>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="js/sesion.js"></script>
+    <script>comprobarSesion("cliente");</script>
+    <script src="js/cliente.js"></script>
+</body>
+</html>

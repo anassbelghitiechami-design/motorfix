@@ -10,3 +10,6 @@ backend/config.local.php
 
 # Logs
 *.log
+
+# Documentación (mockups, diagramas, exportaciones): va adjunta en las issues, no en el repo
+docs/
