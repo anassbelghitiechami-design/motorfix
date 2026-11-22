@@ -79,6 +79,53 @@ class Cita
         return $filas;
     }
 
+    // Devuelve todas las citas del taller con el vehículo, el cliente y el mecánico (para la oficina)
+    // El mecánico puede ser null, por eso se une con LEFT JOIN
+    function getCitas()
+    {
+        $sql = "SELECT c.id_cita, c.matricula, v.marca, v.modelo, cli.nombre AS cliente,
+                       c.id_mecanico, mec.nombre AS mecanico, c.fecha_hora, c.tipo_servicio, c.motivo, c.estado,
+                       f.numero AS factura, f.total
+                FROM cita c
+                JOIN vehiculo v ON v.matricula = c.matricula
+                JOIN usuario cli ON cli.id_usuario = v.id_cliente
+                LEFT JOIN usuario mec ON mec.id_usuario = c.id_mecanico
+                LEFT JOIN factura f ON f.id_cita = c.id_cita
+                ORDER BY c.fecha_hora DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $filas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $filas;
+    }
+
+    // Devuelve la hoja de trabajo de un mecánico: las citas que tiene asignadas, con el vehículo y el cliente
+    function getCitasMecanico($id_mecanico)
+    {
+        $sql = "SELECT c.id_cita, c.matricula, v.marca, v.modelo, cli.nombre AS cliente,
+                       c.fecha_hora, c.tipo_servicio, c.motivo, c.estado, c.horas, c.precio_hora
+                FROM cita c
+                JOIN vehiculo v ON v.matricula = c.matricula
+                JOIN usuario cli ON cli.id_usuario = v.id_cliente
+                WHERE c.id_mecanico = :id_mecanico
+                ORDER BY c.fecha_hora";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id_mecanico', $id_mecanico, PDO::PARAM_INT);
+        $stmt->execute();
+        $filas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $filas;
+    }
+
+    // Cuenta las citas que hay en cada estado (para las métricas del admin)
+    // Devuelve filas como ["estado" => "pendiente", "num" => 3]
+    function contarPorEstado()
+    {
+        $sql = "SELECT estado, COUNT(*) AS num FROM cita GROUP BY estado";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $filas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $filas;
+    }
+
     // Guarda en la base de datos los datos actuales del objeto
     function updateCita()
     {
