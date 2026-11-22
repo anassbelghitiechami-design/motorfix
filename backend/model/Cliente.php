@@ -56,6 +56,22 @@ class Cliente
         return $fila;
     }
 
+    // Devuelve todos los clientes con su email, su nombre y cuántos vehículos tienen (para la oficina)
+    function getClientes()
+    {
+        $sql = "SELECT c.id_usuario, u.nombre, u.email, c.dni, c.telefono, c.localidad,
+                       COUNT(v.matricula) AS num_vehiculos
+                FROM cliente c
+                JOIN usuario u ON u.id_usuario = c.id_usuario
+                LEFT JOIN vehiculo v ON v.id_cliente = c.id_usuario
+                GROUP BY c.id_usuario, u.nombre, u.email, c.dni, c.telefono, c.localidad
+                ORDER BY u.nombre";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $filas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $filas;
+    }
+
     // Guarda en la base de datos los datos actuales del objeto
     function updateCliente()
     {

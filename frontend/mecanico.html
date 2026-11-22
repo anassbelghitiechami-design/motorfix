@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotorFix · Mecánico</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/paneles.css">
+</head>
+<body>
+
+    <!-- ---------- Cabecera ---------- -->
+    <header class="cabecera-panel">
+        <a class="logo" href="mecanico.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"></path>
+            </svg>
+            <span>MOTORFIX</span>
+        </a>
+
+        <nav class="menu" aria-label="Secciones">
+            <a href="#hoja" class="activo">Hoja de trabajo</a>
+            <a href="#reparacion">Reparación</a>
+        </nav>
+
+        <div class="usuario">
+            <span class="avatar" id="iniciales"></span>
+            <a href="login.html" id="salir">Salir</a>
+        </div>
+    </header>
+
+    <main class="panel">
+
+        <!-- ---------- Saludo ---------- -->
+        <div class="saludo">
+            <p>Hola, <span id="nombreUsuario">[NOMBRE]</span></p>
+            <h1>Tu hoja de trabajo</h1>
+        </div>
+
+        <!-- Aquí se mostrará el msg del servidor (éxito o error) -->
+        <div id="mensaje" class="mensaje oculto" role="alert"></div>
+
+        <!-- ---------- Hoja de trabajo: las citas que la oficina le ha asignado ---------- -->
+        <section id="hoja" class="seccion" aria-labelledby="tituloHoja">
+            <div class="seccion-cabecera">
+                <h2 id="tituloHoja">Hoja de trabajo</h2>
+            </div>
+
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Vehículo</th>
+                            <th>Cliente</th>
+                            <th>Servicio</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <!-- las filas las pintará mecanico.js con los datos de mecanico_sw.php -->
+                    <tbody id="tablaHoja">
+                        <tr>
+                            <td>29/10/2026 12:00</td>
+                            <td>Ford Focus · 9012FGH</td>
+                            <td>Luis Pérez</td>
+                            <td>Avería · Cambio de embrague</td>
+                            <td><span class="estado estado-confirmada">Confirmada</span></td>
+                            <td><button type="button" class="boton boton-secundario boton-pequeno">Abrir</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ---------- Reparación abierta: estado, mano de obra y piezas ---------- -->
+        <section id="reparacion" class="seccion tarjeta" aria-labelledby="tituloReparacion">
+            <div class="seccion-cabecera">
+                <div>
+                    <h2 id="tituloReparacion">Ford Focus · 9012FGH</h2>
+                    <p class="detalle" id="detalleReparacion">Avería · Cambio de embrague · 29/10/2026 12:00</p>
+                </div>
+                <span class="estado estado-confirmada" id="estadoReparacion">Confirmada</span>
+            </div>
+
+            <!-- Botones para cambiar el estado: confirmada -> en_curso -> finalizada -->
+            <div class="acciones-tabla">
+                <button type="button" class="boton" id="empezar">Empezar reparación</button>
+                <button type="button" class="boton boton-secundario" id="finalizar">Marcar como terminada</button>
+            </div>
+
+            <!-- Mano de obra (atributo compuesto de cita: horas + precio_hora) -->
+            <form id="formManoObra" class="form-tarjeta" novalidate>
+                <h3>Mano de obra</h3>
+                <div class="rejilla-campos">
+                    <div class="campo">
+                        <label for="horas">Horas trabajadas</label>
+                        <input type="number" id="horas" name="horas" min="0" step="0.25" placeholder="1.5">
+                    </div>
+
+                    <div class="campo">
+                        <label for="precioHora">Precio por hora (€)</label>
+                        <input type="number" id="precioHora" name="precio_hora" min="0" step="0.01" placeholder="45">
+                    </div>
+
+                    <button type="button" class="boton" id="guardarManoObra">Guardar horas</button>
+                </div>
+            </form>
+
+            <!-- Piezas usadas (tabla cita_pieza) -->
+            <form id="formPieza" class="form-tarjeta" novalidate>
+                <h3>Piezas</h3>
+                <div class="rejilla-campos">
+                    <div class="campo">
+                        <label for="referencia">Referencia</label>
+                        <input type="text" id="referencia" name="referencia" maxlength="30" placeholder="FIL-ACE-01">
+                    </div>
+
+                    <div class="campo">
+                        <label for="descripcion">Descripción</label>
+                        <input type="text" id="descripcion" name="descripcion" maxlength="120" placeholder="Filtro de aceite">
+                    </div>
+
+                    <div class="campo">
+                        <label for="unidades">Unidades</label>
+                        <input type="number" id="unidades" name="unidades" min="1" step="1" value="1">
+                    </div>
+
+                    <div class="campo">
+                        <label for="precioPieza">Precio unidad (€)</label>
+                        <input type="number" id="precioPieza" name="precio" min="0" step="0.01" placeholder="9.90">
+                    </div>
+
+                    <button type="button" class="boton" id="anadirPieza">Añadir pieza</button>
+                </div>
+            </form>
+
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>Referencia</th>
+                            <th>Descripción</th>
+                            <th>Unidades</th>
+                            <th>Precio</th>
+                            <th>Importe</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaPiezas">
+                        <tr>
+                            <td>EMB-KIT-01</td>
+                            <td>Kit de embrague</td>
+                            <td>1</td>
+                            <td>210,00 €</td>
+                            <td>210,00 €</td>
+                            <td><button type="button" class="boton boton-secundario boton-pequeno">Quitar</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/sesion.js"></script>
+    <script>comprobarSesion("mecanico");</script>
+</body>
+</html>
