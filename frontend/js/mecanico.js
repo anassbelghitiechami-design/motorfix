@@ -18,6 +18,17 @@ const textosEstado = {
 //al abrir la pagina pedimos la hoja de trabajo
 listarHoja();
 
+//botones para cambiar el estado de la reparacion abierta
+const buttonEmpezar = document.getElementById("empezar");
+buttonEmpezar.addEventListener("click", (event) => {
+    cambiarEstado("en_curso");
+});
+
+const buttonFinalizar = document.getElementById("finalizar");
+buttonFinalizar.addEventListener("click", (event) => {
+    cambiarEstado("finalizada");
+});
+
 
 //como todas las peticiones de este panel van al mismo sw, esta funcion hace el fetch
 //y le pasa la respuesta a la funcion que le digamos (alFinalizar)
@@ -115,8 +126,40 @@ function abrirReparacion(cita){
     estado.textContent = textosEstado[cita.estado];
     estado.className = "estado estado-" + cita.estado;
 
+    //solo se enseña el boton que toca segun el estado
+    if (cita.estado == "confirmada") {
+        buttonEmpezar.classList.remove("oculto");
+    } else {
+        buttonEmpezar.classList.add("oculto");
+    }
+    if (cita.estado == "en_curso") {
+        buttonFinalizar.classList.remove("oculto");
+    } else {
+        buttonFinalizar.classList.add("oculto");
+    }
+
     const seccion = document.getElementById("reparacion");
     seccion.classList.remove("oculto");
+}
+
+
+//pasa la reparacion abierta al estado que se le pasa (en_curso o finalizada)
+function cambiarEstado(nuevoEstado){
+    if (nuevoEstado == "finalizada") {
+        let seguro = confirm("¿Has terminado la reparación? Después ya no podrás cambiar las horas ni las piezas.");
+        if (!seguro) {
+            return;
+        }
+    }
+
+    peticion("cambiarEstado", { id_cita: citaAbierta.id_cita, estado: nuevoEstado }, (response) => {
+        if (response.success) {
+            mostrarMensaje(response.msg, "exito");
+            listarHoja(); //al pintar la hoja se vuelve a abrir la cita con el estado nuevo
+        } else {
+            mostrarMensaje(response.msg, "error");
+        }
+    });
 }
 
 
