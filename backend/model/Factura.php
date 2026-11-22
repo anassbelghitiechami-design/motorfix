@@ -41,6 +41,48 @@ class Factura
         $stmt->execute();
     }
 
+    // Calcula los importes de la factura de la cita del objeto y los guarda en el objeto:
+    //   subtotal (base imponible) = mano de obra (horas x precio_hora) + piezas (unidades x precio de cada una)
+    //   cuota de IVA = base imponible x 21 / 100
+    //   total = base imponible + cuota de IVA
+    // El 21% es el tipo general del IVA en España (visto en wikipedia: "Impuesto sobre el valor añadido (España)").
+    // Tambien de wikipedia: la cuota se redondea a 2 decimales (centimos), por eso se usa round(..., 2).
+    // Devuelve un array con mano_obra, piezas, base_imponible, iva_pct, cuota_iva y total, o false si la cita no existe
+    function calcularImportes()
+    {
+        // LEFT JOIN porque una reparacion puede no llevar piezas; COALESCE pone 0 si la suma da NULL
+        $sql = "SELECT c.horas * c.precio_hora AS mano_obra,
+                       COALESCE(SUM(p.unidades * p.precio), 0) AS piezas
+                FROM cita c
+                LEFT JOIN cita_pieza p ON p.id_cita = c.id_cita
+                WHERE c.id_cita = :id_cita
+                GROUP BY c.id_cita, c.horas, c.precio_hora";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id_cita', $this->id_cita, PDO::PARAM_INT);
+        $stmt->execute();
+        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$fila) {
+            return false;
+        }
+
+        $manoObra = round((float) $fila["mano_obra"], 2);
+        $piezas = round((float) $fila["piezas"], 2);
+
+        $this->base_imponible = round($manoObra + $piezas, 2);
+        $this->cuota_iva = round($this->base_imponible * $this->iva_pct / 100, 2);
+        $this->total = round($this->base_imponible + $this->cuota_iva, 2);
+
+        return [
+            "mano_obra" => $manoObra,
+            "piezas" => $piezas,
+            "base_imponible" => $this->base_imponible,
+            "iva_pct" => $this->iva_pct,
+            "cuota_iva" => $this->cuota_iva,
+            "total" => $this->total
+        ];
+    }
+
     // Devuelve los datos de la factura o false si no existe
     function getFactura()
     {
