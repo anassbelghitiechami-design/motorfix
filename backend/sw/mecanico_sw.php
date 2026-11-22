@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../model/Cita.php';
+require_once __DIR__ . '/../model/CitaPieza.php';
 require_once __DIR__ . '/control_acceso.php';
 
 //Solo los mecanicos usan este sw (control_acceso.php ya hace el session_start)
@@ -75,6 +76,101 @@ switch ($request["action"]){
         $cita = new Cita($obtenido["id_cita"], $obtenido["matricula"], $obtenido["fecha_hora"], $obtenido["tipo_servicio"],
             $obtenido["motivo"], $nuevoEstado, $obtenido["id_mecanico"], $obtenido["horas"], $obtenido["precio_hora"]);
         $cita->updateCita();
+        break;
+
+    case "guardarManoObra":
+        $horas = $request["data"]["horas"];
+        $precio_hora = $request["data"]["precio_hora"];
+        $obtenido = citaDelMecanico($request["data"]["id_cita"], $id_mecanico);
+
+        if (!$obtenido || $obtenido["estado"] != "en_curso") {
+            $success = false;
+            $msg = "Solo se pueden imputar horas a una reparacion que esta en el taller";
+            break;
+        }
+
+        //is_numeric comprueba que el texto es un numero (en la BD quitamos los CHECK, por eso se valida aqui)
+        if (!is_numeric($horas) || !is_numeric($precio_hora) || $horas < 0 || $precio_hora < 0) {
+            $success = false;
+            $msg = "Las horas y el precio por hora tienen que ser numeros positivos";
+            break;
+        }
+
+        $cita = new Cita($obtenido["id_cita"], $obtenido["matricula"], $obtenido["fecha_hora"], $obtenido["tipo_servicio"],
+            $obtenido["motivo"], $obtenido["estado"], $obtenido["id_mecanico"], $horas, $precio_hora);
+        $cita->updateCita();
+        $msg = "Mano de obra guardada";
+        break;
+
+    case "listarPiezas":
+        $obtenido = citaDelMecanico($request["data"]["id_cita"], $id_mecanico);
+
+        if (!$obtenido) {
+            $success = false;
+            $msg = "Esa reparacion no existe o no es tuya";
+            break;
+        }
+
+        $pieza = new CitaPieza(null, $obtenido["id_cita"]);
+        $data = $pieza->getPiezasCita();
+        $msg = "Piezas obtenidas correctamente";
+        break;
+
+    case "anadirPieza":
+        $nueva["id_cita"]= $request["data"]["id_cita"];
+        $nueva["referencia"]= strtoupper(trim($request["data"]["referencia"]));
+        $nueva["descripcion"]= trim($request["data"]["descripcion"]);
+        $nueva["unidades"]= $request["data"]["unidades"];
+        $nueva["precio"]= $request["data"]["precio"];
+
+        $obtenido = citaDelMecanico($nueva["id_cita"], $id_mecanico);
+        if (!$obtenido || $obtenido["estado"] != "en_curso") {
+            $success = false;
+            $msg = "Solo se pueden añadir piezas a una reparacion que esta en el taller";
+            break;
+        }
+
+        if ($nueva["referencia"] == "" || $nueva["descripcion"] == "") {
+            $success = false;
+            $msg = "La referencia y la descripcion son obligatorias";
+            break;
+        }
+
+        //las unidades tienen que ser un numero entero mayor que 0 y el precio un numero positivo
+        if (!ctype_digit((string) $nueva["unidades"]) || $nueva["unidades"] < 1 || !is_numeric($nueva["precio"]) || $nueva["precio"] < 0) {
+            $success = false;
+            $msg = "Las unidades tienen que ser 1 o mas y el precio un numero positivo";
+            break;
+        }
+
+        $pieza = new CitaPieza(null, $nueva["id_cita"], $nueva["referencia"], $nueva["descripcion"], $nueva["unidades"], $nueva["precio"]);
+
+        try {
+            $pieza->insertCitaPieza();
+            $data = $nueva;
+            $msg = "Pieza añadida";
+        } catch (PDOException $e) {
+            //(id_cita, referencia) es UNIQUE: la misma pieza no se puede repetir en una cita
+            error_log("Error al añadir pieza: " . $e->getMessage());
+            $success = false;
+            $msg = "Esa referencia ya esta en la reparacion. Quitala y añadela con las unidades correctas";
+        }
+        break;
+
+    case "quitarPieza":
+        $pieza = new CitaPieza($request["data"]["id_cita_pieza"]);
+        $obtenida = $pieza->getCitaPieza();
+
+        //la pieza tiene que existir y ser de una reparacion de este mecanico que este en el taller
+        $obtenido = $obtenida ? citaDelMecanico($obtenida["id_cita"], $id_mecanico) : false;
+        if (!$obtenido || $obtenido["estado"] != "en_curso") {
+            $success = false;
+            $msg = "No se puede quitar esa pieza";
+            break;
+        }
+
+        $pieza->deleteCitaPieza();
+        $msg = "Pieza quitada";
         break;
 
     default:

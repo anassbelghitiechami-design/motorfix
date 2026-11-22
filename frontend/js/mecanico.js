@@ -29,6 +29,18 @@ buttonFinalizar.addEventListener("click", (event) => {
     cambiarEstado("finalizada");
 });
 
+//al boton Guardar horas le añadimos un escuchador tipo click
+const buttonManoObra = document.getElementById("guardarManoObra");
+buttonManoObra.addEventListener("click", (event) => {
+    guardarManoObra();
+});
+
+//al boton Añadir pieza le añadimos un escuchador tipo click
+const buttonPieza = document.getElementById("anadirPieza");
+buttonPieza.addEventListener("click", (event) => {
+    anadirPieza();
+});
+
 
 //como todas las peticiones de este panel van al mismo sw, esta funcion hace el fetch
 //y le pasa la respuesta a la funcion que le digamos (alFinalizar)
@@ -138,8 +150,140 @@ function abrirReparacion(cita){
         buttonFinalizar.classList.add("oculto");
     }
 
+    //las horas se rellenan con lo que ya habia guardado
+    document.getElementById("horas").value = cita.horas ? cita.horas : "";
+    document.getElementById("precioHora").value = cita.precio_hora ? cita.precio_hora : "";
+
+    //las horas y las piezas solo se pueden tocar mientras el coche esta en el taller
+    const editable = cita.estado == "en_curso";
+    const campos = document.querySelectorAll("#formManoObra input, #formPieza input, #formManoObra button, #formPieza button");
+    for (let i = 0; i < campos.length; i++) {
+        campos[i].disabled = !editable;
+    }
+
+    listarPiezas();
+
     const seccion = document.getElementById("reparacion");
     seccion.classList.remove("oculto");
+}
+
+
+// ---------- Mano de obra y piezas ----------
+
+function guardarManoObra(){
+    let manoObra = {};
+    manoObra.id_cita = citaAbierta.id_cita;
+    manoObra.horas = document.getElementById("horas").value;
+    manoObra.precio_hora = document.getElementById("precioHora").value;
+
+    if (manoObra.horas == "" || manoObra.precio_hora == "") {
+        mostrarMensaje("Escribe las horas trabajadas y el precio por hora", "error");
+        return;
+    }
+
+    peticion("guardarManoObra", manoObra, (response) => {
+        if (response.success) {
+            mostrarMensaje(response.msg, "exito");
+            listarHoja(); //para que la cita abierta tenga las horas nuevas
+        } else {
+            mostrarMensaje(response.msg, "error");
+        }
+    });
+}
+
+
+function listarPiezas(){
+    peticion("listarPiezas", { id_cita: citaAbierta.id_cita }, (response) => {
+        if (response.success) {
+            pintarPiezas(response.data);
+        } else {
+            mostrarMensaje(response.msg, "error");
+        }
+    });
+}
+
+
+//una fila por pieza con su importe (unidades x precio) y el boton Quitar
+function pintarPiezas(piezas){
+    const tabla = document.getElementById("tablaPiezas");
+    tabla.innerHTML = "";
+
+    if (piezas.length == 0) {
+        tabla.innerHTML = '<tr><td colspan="6" class="detalle">Todavía no hay piezas en esta reparación.</td></tr>';
+        return;
+    }
+
+    for (let i = 0; i < piezas.length; i++) {
+        const pieza = piezas[i];
+
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+            <td></td><td></td><td></td><td></td><td></td>
+            <td><button type="button" class="boton boton-secundario boton-pequeno">Quitar</button></td>
+        `;
+        const celdas = fila.querySelectorAll("td");
+        celdas[0].textContent = pieza.referencia;
+        celdas[1].textContent = pieza.descripcion;
+        celdas[2].textContent = pieza.unidades;
+        celdas[3].textContent = formatearEuros(pieza.precio);
+        celdas[4].textContent = formatearEuros(pieza.unidades * pieza.precio);
+
+        const boton = fila.querySelector("button");
+        boton.disabled = citaAbierta.estado != "en_curso";
+        boton.addEventListener("click", (event) => {
+            quitarPieza(pieza);
+        });
+
+        tabla.appendChild(fila);
+    }
+}
+
+
+function anadirPieza(){
+    let pieza = {};
+    pieza.id_cita = citaAbierta.id_cita;
+    pieza.referencia = document.getElementById("referencia").value.trim();
+    pieza.descripcion = document.getElementById("descripcion").value.trim();
+    pieza.unidades = document.getElementById("unidades").value;
+    pieza.precio = document.getElementById("precioPieza").value;
+
+    if (pieza.referencia == "" || pieza.descripcion == "" || pieza.unidades == "" || pieza.precio == "") {
+        mostrarMensaje("Rellena la referencia, la descripción, las unidades y el precio de la pieza", "error");
+        return;
+    }
+
+    peticion("anadirPieza", pieza, (response) => {
+        if (response.success) {
+            mostrarMensaje(response.msg, "exito");
+            document.getElementById("formPieza").reset();
+            listarPiezas();
+        } else {
+            mostrarMensaje(response.msg, "error");
+        }
+    });
+}
+
+
+function quitarPieza(pieza){
+    let seguro = confirm("¿Quitar " + pieza.descripcion + " de la reparación?");
+    if (!seguro) {
+        return;
+    }
+
+    peticion("quitarPieza", { id_cita_pieza: pieza.id_cita_pieza }, (response) => {
+        if (response.success) {
+            mostrarMensaje(response.msg, "exito");
+            listarPiezas();
+        } else {
+            mostrarMensaje(response.msg, "error");
+        }
+    });
+}
+
+
+//9.9 -> "9,90 €" (toFixed deja 2 decimales y cambiamos el punto por coma)
+function formatearEuros(numero){
+    return Number(numero).toFixed(2).replace(".", ",") + " €";
 }
 
 
