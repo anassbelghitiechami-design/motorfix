@@ -115,16 +115,7 @@
                             <th>Vehículos</th>
                         </tr>
                     </thead>
-                    <tbody id="tablaClientes">
-                        <tr>
-                            <td>Ana García</td>
-                            <td>12345678A</td>
-                            <td>ana@motorfix.test</td>
-                            <td>600111222</td>
-                            <td>Elche</td>
-                            <td>2</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="tablaClientes"></tbody>
                 </table>
             </div>
         </section>
@@ -142,9 +133,8 @@
                 <div class="rejilla-campos">
                     <div class="campo">
                         <label for="clienteVehiculo">Cliente</label>
-                        <select id="clienteVehiculo" name="id_cliente" required>
-                            <option value="4">Ana García</option>
-                        </select>
+                        <!-- las opciones las pone oficina.js con los clientes -->
+                        <select id="clienteVehiculo" name="id_cliente" required></select>
                     </div>
 
                     <div class="campo">
@@ -182,15 +172,7 @@
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="tablaVehiculos">
-                        <tr>
-                            <td>1234KLM</td>
-                            <td>Seat León</td>
-                            <td>2019</td>
-                            <td>Ana García</td>
-                            <td><button type="button" class="boton boton-secundario boton-pequeno">Borrar</button></td>
-                        </tr>
-                    </tbody>
+                    <tbody id="tablaVehiculos"></tbody>
                 </table>
             </div>
         </section>
@@ -198,5 +180,6 @@
 
     <script src="js/sesion.js"></script>
     <script>comprobarSesion("oficina");</script>
+    <script src="js/oficina.js"></script>
 </body>
 </html>
