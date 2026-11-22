@@ -11,7 +11,17 @@ const textosRol = {
     cliente: "Cliente"
 };
 
-//al abrir la pagina pedimos los usuarios
+//textos que se enseñan para cada estado de las citas
+const textosEstado = {
+    pendiente: "Pendientes",
+    confirmada: "Confirmadas",
+    rechazada: "Rechazadas",
+    en_curso: "En el taller",
+    finalizada: "Finalizadas"
+};
+
+//al abrir la pagina pedimos las metricas y los usuarios
+cargarMetricas();
 listarUsuarios();
 
 
@@ -38,6 +48,54 @@ function peticion(action, data, alFinalizar){
         console.log("Hubo un problema con la peticion fetch:" + error.message);
         mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
+}
+
+
+// ---------- Metricas ----------
+
+function cargarMetricas(){
+    peticion("metricas", {}, (response) => {
+        if (response.success) {
+            pintarMetricas(response.data);
+        } else {
+            mostrarMensaje(response.msg, "error");
+        }
+    });
+}
+
+
+function pintarMetricas(metricas){
+    const facturacion = metricas.facturacion;
+
+    document.getElementById("facturacionTotal").textContent = formatearEuros(facturacion.total);
+    document.getElementById("facturacionDetalle").textContent = facturacion.num_facturas + " facturas · base " +
+        formatearEuros(facturacion.base_imponible) + " + IVA " + formatearEuros(facturacion.cuota_iva);
+
+    document.getElementById("totalCitas").textContent = metricas.total_citas;
+    document.getElementById("citasDetalle").textContent = metricas.citas.pendiente + " pendientes de validar";
+    document.getElementById("totalClientes").textContent = metricas.clientes;
+    document.getElementById("totalVehiculos").textContent = metricas.vehiculos;
+
+    //una fila por estado con su numero de citas
+    const tabla = document.getElementById("tablaEstados");
+    tabla.innerHTML = "";
+
+    //for...in recorre las claves del objeto: pendiente, confirmada...
+    for (let estado in metricas.citas) {
+        const fila = document.createElement("tr");
+        fila.innerHTML = '<td><span class="estado"></span></td><td></td>';
+        const etiqueta = fila.querySelector(".estado");
+        etiqueta.textContent = textosEstado[estado];
+        etiqueta.classList.add("estado-" + estado);
+        fila.querySelectorAll("td")[1].textContent = metricas.citas[estado];
+        tabla.appendChild(fila);
+    }
+}
+
+
+//93.4 -> "93,40 €" (toFixed deja 2 decimales y cambiamos el punto por coma)
+function formatearEuros(numero){
+    return Number(numero).toFixed(2).replace(".", ",") + " €";
 }
 
 

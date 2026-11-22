@@ -19,7 +19,8 @@
         </a>
 
         <nav class="menu" aria-label="Secciones">
-            <a href="#usuarios" class="activo">Usuarios</a>
+            <a href="#metricas" class="activo">Métricas</a>
+            <a href="#usuarios">Usuarios</a>
         </nav>
 
         <div class="usuario">
@@ -38,6 +39,48 @@
 
         <!-- Aquí se mostrará el msg del servidor (éxito o error) -->
         <div id="mensaje" class="mensaje oculto" role="alert"></div>
+
+        <!-- ---------- Métricas del taller ---------- -->
+        <section id="metricas" class="seccion" aria-labelledby="tituloMetricas">
+            <div class="seccion-cabecera">
+                <h2 id="tituloMetricas">Métricas del taller</h2>
+            </div>
+
+            <!-- los numeros los pone admin.js con los datos de admin_sw.php -->
+            <div class="metricas">
+                <div class="metrica">
+                    <p class="detalle">Facturación (con IVA)</p>
+                    <p class="metrica-valor" id="facturacionTotal">0,00 €</p>
+                    <p class="detalle" id="facturacionDetalle"></p>
+                </div>
+                <div class="metrica">
+                    <p class="detalle">Citas</p>
+                    <p class="metrica-valor" id="totalCitas">0</p>
+                    <p class="detalle" id="citasDetalle"></p>
+                </div>
+                <div class="metrica">
+                    <p class="detalle">Clientes</p>
+                    <p class="metrica-valor" id="totalClientes">0</p>
+                </div>
+                <div class="metrica">
+                    <p class="detalle">Vehículos</p>
+                    <p class="metrica-valor" id="totalVehiculos">0</p>
+                </div>
+            </div>
+
+            <!-- citas que hay en cada estado -->
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>Estado</th>
+                            <th>Citas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaEstados"></tbody>
+                </table>
+            </div>
+        </section>
 
         <!-- ---------- Usuarios ---------- -->
         <section id="usuarios" class="seccion" aria-labelledby="tituloUsuarios">

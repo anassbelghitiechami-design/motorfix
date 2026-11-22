@@ -302,3 +302,33 @@ p {
 .seccion.oculto {
     display: none;
 }
+
+/* ---------- Métricas del admin ---------- */
+
+.metricas {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.metrica {
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.metrica-valor {
+    font-family: var(--fuente-titulos);
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+@media (max-width: 900px) {
+    .metricas {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

@@ -115,6 +115,17 @@ class Cita
         return $filas;
     }
 
+    // Cuenta las citas que hay en cada estado (para las métricas del admin)
+    // Devuelve filas como ["estado" => "pendiente", "num" => 3]
+    function contarPorEstado()
+    {
+        $sql = "SELECT estado, COUNT(*) AS num FROM cita GROUP BY estado";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $filas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $filas;
+    }
+
     // Guarda en la base de datos los datos actuales del objeto
     function updateCita()
     {

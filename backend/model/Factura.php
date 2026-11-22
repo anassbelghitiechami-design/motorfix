@@ -125,6 +125,22 @@ class Factura
         return $filas;
     }
 
+    // Resumen de la facturacion del taller (para las métricas del admin):
+    // cuántas facturas hay, la suma de las bases, del IVA y de los totales
+    // COALESCE pone 0 cuando todavia no hay ninguna factura (SUM daria NULL)
+    function getResumen()
+    {
+        $sql = "SELECT COUNT(*) AS num_facturas,
+                       COALESCE(SUM(base_imponible), 0) AS base_imponible,
+                       COALESCE(SUM(cuota_iva), 0) AS cuota_iva,
+                       COALESCE(SUM(total), 0) AS total
+                FROM factura";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $fila;
+    }
+
     // Devuelve los datos de la factura o false si no existe
     function getFactura()
     {

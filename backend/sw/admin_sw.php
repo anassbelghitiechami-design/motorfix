@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . '/../model/Usuario.php';
+require_once __DIR__ . '/../model/Cliente.php';
+require_once __DIR__ . '/../model/Vehiculo.php';
+require_once __DIR__ . '/../model/Cita.php';
+require_once __DIR__ . '/../model/Factura.php';
 require_once __DIR__ . '/control_acceso.php';
 
 //Solo el administrador usa este sw (control_acceso.php ya hace el session_start)
@@ -21,6 +25,28 @@ $msg = "";
 $data = [];
 
 switch ($request["action"]){
+    case "metricas":
+        $cliente = new Cliente();
+        $vehiculo = new Vehiculo();
+        $cita = new Cita();
+        $factura = new Factura();
+
+        //count() cuenta los elementos de un array
+        $data["clientes"] = count($cliente->getClientes());
+        $data["vehiculos"] = count($vehiculo->getVehiculos());
+
+        //las citas por estado: empezamos todas a 0 por si algun estado no tiene ninguna
+        $data["citas"] = ["pendiente" => 0, "confirmada" => 0, "rechazada" => 0, "en_curso" => 0, "finalizada" => 0];
+        $data["total_citas"] = 0;
+        foreach ($cita->contarPorEstado() as $fila) {
+            $data["citas"][$fila["estado"]] = (int) $fila["num"];
+            $data["total_citas"] += (int) $fila["num"];
+        }
+
+        $data["facturacion"] = $factura->getResumen();
+        $msg = "Metricas obtenidas correctamente";
+        break;
+
     case "listarUsuarios":
         $usuario = new Usuario();
         $data = $usuario->getUsuarios();
