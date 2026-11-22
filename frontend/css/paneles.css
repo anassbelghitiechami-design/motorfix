@@ -297,3 +297,8 @@ p {
         grid-template-columns: 1fr;
     }
 }
+
+/* .seccion tiene display: flex, asi que hace falta esta regla para poder esconderla */
+.seccion.oculto {
+    display: none;
+}

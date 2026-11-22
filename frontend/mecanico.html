@@ -59,28 +59,20 @@
                         </tr>
                     </thead>
                     <!-- las filas las pintará mecanico.js con los datos de mecanico_sw.php -->
-                    <tbody id="tablaHoja">
-                        <tr>
-                            <td>29/10/2026 12:00</td>
-                            <td>Ford Focus · 9012FGH</td>
-                            <td>Luis Pérez</td>
-                            <td>Avería · Cambio de embrague</td>
-                            <td><span class="estado estado-confirmada">Confirmada</span></td>
-                            <td><button type="button" class="boton boton-secundario boton-pequeno">Abrir</button></td>
-                        </tr>
-                    </tbody>
+                    <tbody id="tablaHoja"></tbody>
                 </table>
             </div>
         </section>
 
         <!-- ---------- Reparación abierta: estado, mano de obra y piezas ---------- -->
-        <section id="reparacion" class="seccion tarjeta" aria-labelledby="tituloReparacion">
+        <!-- Está oculta hasta que el mecánico pulsa Abrir en una cita (mecanico.js le quita la clase oculto) -->
+        <section id="reparacion" class="seccion tarjeta oculto" aria-labelledby="tituloReparacion">
             <div class="seccion-cabecera">
                 <div>
-                    <h2 id="tituloReparacion">Ford Focus · 9012FGH</h2>
-                    <p class="detalle" id="detalleReparacion">Avería · Cambio de embrague · 29/10/2026 12:00</p>
+                    <h2 id="tituloReparacion"></h2>
+                    <p class="detalle" id="detalleReparacion"></p>
                 </div>
-                <span class="estado estado-confirmada" id="estadoReparacion">Confirmada</span>
+                <span class="estado" id="estadoReparacion"></span>
             </div>
 
             <!-- Botones para cambiar el estado: confirmada -> en_curso -> finalizada -->
@@ -147,16 +139,7 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody id="tablaPiezas">
-                        <tr>
-                            <td>EMB-KIT-01</td>
-                            <td>Kit de embrague</td>
-                            <td>1</td>
-                            <td>210,00 €</td>
-                            <td>210,00 €</td>
-                            <td><button type="button" class="boton boton-secundario boton-pequeno">Quitar</button></td>
-                        </tr>
-                    </tbody>
+                    <tbody id="tablaPiezas"></tbody>
                 </table>
             </div>
         </section>
@@ -164,5 +147,6 @@
 
     <script src="js/sesion.js"></script>
     <script>comprobarSesion("mecanico");</script>
+    <script src="js/mecanico.js"></script>
 </body>
 </html>

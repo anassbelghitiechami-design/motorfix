@@ -96,6 +96,23 @@ class Cita
         return $filas;
     }
 
+    // Devuelve la hoja de trabajo de un mecánico: las citas que tiene asignadas, con el vehículo y el cliente
+    function getCitasMecanico($id_mecanico)
+    {
+        $sql = "SELECT c.id_cita, c.matricula, v.marca, v.modelo, cli.nombre AS cliente,
+                       c.fecha_hora, c.tipo_servicio, c.motivo, c.estado, c.horas, c.precio_hora
+                FROM cita c
+                JOIN vehiculo v ON v.matricula = c.matricula
+                JOIN usuario cli ON cli.id_usuario = v.id_cliente
+                WHERE c.id_mecanico = :id_mecanico
+                ORDER BY c.fecha_hora";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id_mecanico', $id_mecanico, PDO::PARAM_INT);
+        $stmt->execute();
+        $filas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $filas;
+    }
+
     // Guarda en la base de datos los datos actuales del objeto
     function updateCita()
     {
