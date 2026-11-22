@@ -57,6 +57,19 @@ class Vehiculo
         return $filas;
     }
 
+    // Devuelve todos los vehículos del taller con el nombre de su dueño (para la oficina)
+    function getVehiculos()
+    {
+        $sql = "SELECT v.matricula, v.id_cliente, v.marca, v.modelo, v.anio, u.nombre AS cliente
+                FROM vehiculo v
+                JOIN usuario u ON u.id_usuario = v.id_cliente
+                ORDER BY u.nombre, v.matricula";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $filas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $filas;
+    }
+
     function updateVehiculo()
     {
         $sql = "UPDATE vehiculo SET id_cliente = :id_cliente, marca = :marca, modelo = :modelo, anio = :anio
