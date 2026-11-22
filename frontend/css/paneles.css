@@ -1,0 +1,304 @@
+/* =========================================================
+   MotorFix · Paneles del taller (Oficina, Mecánico y Admin)
+   La cabecera y el saludo son los mismos que en el panel de Cliente
+   ========================================================= */
+
+p {
+    margin: 0;
+}
+
+.detalle {
+    font-size: 14px;
+    color: var(--texto-secundario);
+}
+
+.tarjeta {
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+/* ---------- Cabecera ---------- */
+
+.cabecera-panel {
+    min-height: 72px;
+    padding: 0 32px;
+    border-bottom: 1px solid var(--borde);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.cabecera-panel .logo svg {
+    width: 28px;
+    height: 28px;
+}
+
+.cabecera-panel .logo span {
+    font-size: 24px;
+}
+
+.menu {
+    align-self: stretch;
+    display: flex;
+    gap: 4px;
+}
+
+.menu a {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    min-height: 44px;
+    border-bottom: 3px solid transparent;
+    color: var(--texto-secundario);
+    text-decoration: none;
+}
+
+.menu a:hover {
+    color: var(--texto);
+}
+
+.menu a.activo {
+    border-bottom-color: var(--rojo);
+    color: var(--texto);
+    font-weight: 600;
+}
+
+.usuario {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border: 2px solid var(--rojo);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.usuario a {
+    color: var(--texto-secundario);
+}
+
+/* ---------- Contenido ---------- */
+
+.panel {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.saludo p {
+    font-size: 14px;
+    color: var(--texto-secundario);
+    margin-bottom: 4px;
+}
+
+.saludo h1 {
+    font-size: 44px;
+    line-height: 1;
+}
+
+.seccion {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.seccion-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.seccion-cabecera h2 {
+    font-size: 30px;
+}
+
+/* el filtro de las citas (un select pequeño al lado del titulo) */
+.seccion-cabecera .campo {
+    flex-direction: row;
+    align-items: center;
+}
+
+.seccion-cabecera .campo select {
+    height: 40px;
+}
+
+/* ---------- Tablas ---------- */
+
+/* en pantallas pequeñas la tabla se puede desplazar de lado sin romper la pagina */
+.tabla-contenedor {
+    overflow-x: auto;
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+}
+
+.tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.tabla th,
+.tabla td {
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--borde);
+    vertical-align: middle;
+}
+
+.tabla th {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--texto-secundario);
+}
+
+.tabla tr:last-child td {
+    border-bottom: 0;
+}
+
+.tabla .acciones-tabla {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* selects y botones pequeños dentro de las tablas */
+.tabla select,
+.tabla input {
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--borde-campo);
+    border-radius: var(--radio);
+    background: var(--superficie);
+    color: var(--texto);
+    font: inherit;
+    font-size: 14px;
+}
+
+.boton-pequeno {
+    height: 36px;
+    padding: 0 14px;
+    font-size: 14px;
+}
+
+.boton-pequeno.boton-secundario {
+    border-width: 1px;
+}
+
+/* ---------- Formularios dentro de una tarjeta ---------- */
+
+.form-tarjeta {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-tarjeta h3 {
+    font-size: 24px;
+}
+
+.rejilla-campos {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    align-items: end;
+}
+
+/* ---------- Etiquetas de estado (iguales que en el panel de Cliente) ---------- */
+
+.estado {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.estado-pendiente {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.estado-confirmada {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.estado-rechazada {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.estado-en_curso {
+    background: var(--rojo);
+    color: #ffffff;
+}
+
+.estado-finalizada {
+    border: 1px solid var(--borde-campo);
+    color: var(--texto-secundario);
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 900px) {
+    .rejilla-campos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Móvil: el menú baja a su propia fila y todo se apila */
+@media (max-width: 700px) {
+    .cabecera-panel {
+        padding: 12px 16px 0;
+        flex-wrap: wrap;
+    }
+
+    .menu {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .panel {
+        padding: 24px 16px;
+        gap: 24px;
+    }
+
+    .saludo h1 {
+        font-size: 34px;
+    }
+
+    .tarjeta {
+        padding: 18px;
+    }
+
+    .rejilla-campos {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* .seccion tiene display: flex, asi que hace falta esta regla para poder esconderla */
+.seccion.oculto {
+    display: none;
+}

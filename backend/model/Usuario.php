@@ -59,6 +59,42 @@ class Usuario
         return $fila;
     }
 
+    // Devuelve los mecánicos (id y nombre) para el desplegable de la oficina
+    // Se mira tambien el rol porque si el admin le quita el rol de mecanico su fila en mecanico se queda
+    // (para no perder a quien hizo las reparaciones antiguas)
+    function getMecanicos()
+    {
+        $sql = "SELECT u.id_usuario, u.nombre
+                FROM usuario u
+                JOIN mecanico m ON m.id_usuario = u.id_usuario
+                WHERE u.rol = 'mecanico'
+                ORDER BY u.nombre";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $filas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $filas;
+    }
+
+    // Devuelve todos los usuarios (sin la contraseña) para el panel del admin
+    function getUsuarios()
+    {
+        $sql = "SELECT id_usuario, email, nombre, rol FROM usuario ORDER BY rol, nombre";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $filas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $filas;
+    }
+
+    // Da de alta al usuario del objeto en la tabla mecanico (especializacion de usuario).
+    // INSERT IGNORE no da error si ya estaba
+    function insertMecanico()
+    {
+        $sql = "INSERT IGNORE INTO mecanico (id_usuario) VALUES (:id_usuario)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id_usuario', $this->id_usuario, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
     // Borra el usuario (si es cliente o mecánico, su fila en cliente/mecanico se borra en cascada)
     function deleteUsuario()
     {

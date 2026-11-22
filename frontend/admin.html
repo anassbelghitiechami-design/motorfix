@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotorFix · Administración</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/paneles.css">
+</head>
+<body>
+
+    <!-- ---------- Cabecera ---------- -->
+    <header class="cabecera-panel">
+        <a class="logo" href="admin.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"></path>
+            </svg>
+            <span>MOTORFIX</span>
+        </a>
+
+        <nav class="menu" aria-label="Secciones">
+            <a href="#usuarios" class="activo">Usuarios</a>
+        </nav>
+
+        <div class="usuario">
+            <span class="avatar" id="iniciales"></span>
+            <a href="login.html" id="salir">Salir</a>
+        </div>
+    </header>
+
+    <main class="panel">
+
+        <!-- ---------- Saludo ---------- -->
+        <div class="saludo">
+            <p>Hola, <span id="nombreUsuario">[NOMBRE]</span></p>
+            <h1>Administración del taller</h1>
+        </div>
+
+        <!-- Aquí se mostrará el msg del servidor (éxito o error) -->
+        <div id="mensaje" class="mensaje oculto" role="alert"></div>
+
+        <!-- ---------- Usuarios ---------- -->
+        <section id="usuarios" class="seccion" aria-labelledby="tituloUsuarios">
+            <div class="seccion-cabecera">
+                <h2 id="tituloUsuarios">Usuarios</h2>
+            </div>
+
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <!-- las filas las pinta admin.js con los datos de admin_sw.php -->
+                    <tbody id="tablaUsuarios"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/sesion.js"></script>
+    <script>comprobarSesion("admin");</script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

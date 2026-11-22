@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotorFix · Oficina</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/paneles.css">
+</head>
+<body>
+
+    <!-- ---------- Cabecera ---------- -->
+    <header class="cabecera-panel">
+        <a class="logo" href="oficina.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"></path>
+            </svg>
+            <span>MOTORFIX</span>
+        </a>
+
+        <nav class="menu" aria-label="Secciones">
+            <a href="#citas" class="activo">Citas</a>
+            <a href="#clientes">Clientes</a>
+            <a href="#vehiculos">Vehículos</a>
+        </nav>
+
+        <div class="usuario">
+            <span class="avatar" id="iniciales"></span>
+            <a href="login.html" id="salir">Salir</a>
+        </div>
+    </header>
+
+    <main class="panel">
+
+        <!-- ---------- Saludo ---------- -->
+        <div class="saludo">
+            <p>Hola, <span id="nombreUsuario">[NOMBRE]</span></p>
+            <h1>Panel de oficina</h1>
+        </div>
+
+        <!-- Aquí se mostrará el msg del servidor (éxito o error) -->
+        <div id="mensaje" class="mensaje oculto" role="alert"></div>
+
+        <!-- ---------- Citas ---------- -->
+        <!-- Las pendientes se validan (asignando mecánico) o se rechazan. Las finalizadas se facturan -->
+        <section id="citas" class="seccion" aria-labelledby="tituloCitas">
+            <div class="seccion-cabecera">
+                <h2 id="tituloCitas">Citas</h2>
+                <div class="campo">
+                    <label for="filtroEstado">Estado</label>
+                    <select id="filtroEstado">
+                        <option value="">Todas</option>
+                        <option value="pendiente">Pendientes</option>
+                        <option value="confirmada">Confirmadas</option>
+                        <option value="en_curso">En el taller</option>
+                        <option value="finalizada">Finalizadas</option>
+                        <option value="rechazada">Rechazadas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Vehículo</th>
+                            <th>Servicio</th>
+                            <th>Mecánico</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <!-- las filas las pintará oficina.js con los datos de oficina_sw.php -->
+                    <tbody id="tablaCitas"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ---------- Clientes ---------- -->
+        <section id="clientes" class="seccion" aria-labelledby="tituloClientes">
+            <div class="seccion-cabecera">
+                <h2 id="tituloClientes">Clientes</h2>
+            </div>
+
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>DNI</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Localidad</th>
+                            <th>Vehículos</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaClientes"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ---------- Vehículos ---------- -->
+        <section id="vehiculos" class="seccion" aria-labelledby="tituloVehiculos">
+            <div class="seccion-cabecera">
+                <h2 id="tituloVehiculos">Vehículos</h2>
+            </div>
+
+            <!-- Formulario para dar de alta un vehículo a un cliente que viene a la oficina -->
+            <form id="formVehiculo" class="tarjeta form-tarjeta" novalidate>
+                <h3>Añadir vehículo a un cliente</h3>
+
+                <div class="rejilla-campos">
+                    <div class="campo">
+                        <label for="clienteVehiculo">Cliente</label>
+                        <!-- las opciones las pone oficina.js con los clientes -->
+                        <select id="clienteVehiculo" name="id_cliente" required></select>
+                    </div>
+
+                    <div class="campo">
+                        <label for="matricula">Matrícula</label>
+                        <input type="text" id="matricula" name="matricula" placeholder="1234 ABC" maxlength="10" required>
+                    </div>
+
+                    <div class="campo">
+                        <label for="marca">Marca</label>
+                        <input type="text" id="marca" name="marca" placeholder="Seat" maxlength="50" required>
+                    </div>
+
+                    <div class="campo">
+                        <label for="modelo">Modelo</label>
+                        <input type="text" id="modelo" name="modelo" placeholder="León" maxlength="50" required>
+                    </div>
+
+                    <div class="campo">
+                        <label for="anio">Año</label>
+                        <input type="number" id="anio" name="anio" placeholder="2019" min="1950" max="2100">
+                    </div>
+
+                    <button type="button" class="boton" id="guardarVehiculo">Guardar vehículo</button>
+                </div>
+            </form>
+
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>Matrícula</th>
+                            <th>Vehículo</th>
+                            <th>Año</th>
+                            <th>Cliente</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaVehiculos"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/sesion.js"></script>
+    <script>comprobarSesion("oficina");</script>
+    <script src="js/oficina.js"></script>
+</body>
+</html>
