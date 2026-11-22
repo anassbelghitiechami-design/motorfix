@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../model/Cliente.php';
 require_once __DIR__ . '/../model/Vehiculo.php';
+require_once __DIR__ . '/../model/Cita.php';
+require_once __DIR__ . '/../model/Usuario.php';
 require_once __DIR__ . '/control_acceso.php';
 
 //Solo la oficina usa este sw (control_acceso.php ya hace el session_start)
@@ -22,6 +24,69 @@ $msg = "";
 $data = [];
 
 switch ($request["action"]){
+    case "listarCitas":
+        $cita = new Cita();
+        $data = $cita->getCitas();
+        $msg = "Citas obtenidas correctamente";
+        break;
+
+    case "listarMecanicos":
+        $usuario = new Usuario();
+        $data = $usuario->getMecanicos();
+        $msg = "Mecanicos obtenidos correctamente";
+        break;
+
+    case "validarCita":
+        $id_cita = $request["data"]["id_cita"];
+        $id_mecanico = $request["data"]["id_mecanico"];
+
+        if ($id_mecanico == "") {
+            $success = false;
+            $msg = "Elige el mecanico que hara la reparacion";
+            break;
+        }
+
+        $cita = new Cita($id_cita);
+        $obtenido = $cita->getCita();
+
+        //solo se pueden validar las citas que estan pendientes
+        if (!$obtenido || $obtenido["estado"] != "pendiente") {
+            $success = false;
+            $msg = "Solo se pueden validar las citas pendientes";
+            break;
+        }
+
+        //creamos la cita con los mismos datos pero confirmada y con el mecanico, y la guardamos
+        $cita = new Cita($obtenido["id_cita"], $obtenido["matricula"], $obtenido["fecha_hora"], $obtenido["tipo_servicio"],
+            $obtenido["motivo"], "confirmada", $id_mecanico, $obtenido["horas"], $obtenido["precio_hora"]);
+
+        try {
+            $cita->updateCita();
+            $msg = "Cita confirmada y asignada al mecanico";
+        } catch (PDOException $e) {
+            //si el id_mecanico no es de un mecanico falla la clave foranea
+            error_log("Error al validar cita: " . $e->getMessage());
+            $success = false;
+            $msg = "Error al validar la cita";
+        }
+        break;
+
+    case "rechazarCita":
+        $cita = new Cita($request["data"]["id_cita"]);
+        $obtenido = $cita->getCita();
+
+        if (!$obtenido || $obtenido["estado"] != "pendiente") {
+            $success = false;
+            $msg = "Solo se pueden rechazar las citas pendientes";
+            break;
+        }
+
+        $cita = new Cita($obtenido["id_cita"], $obtenido["matricula"], $obtenido["fecha_hora"], $obtenido["tipo_servicio"],
+            $obtenido["motivo"], "rechazada", null, $obtenido["horas"], $obtenido["precio_hora"]);
+        $cita->updateCita();
+        $msg = "Cita rechazada";
+        break;
+
     case "listarClientes":
         $cliente = new Cliente();
         $data = $cliente->getClientes();

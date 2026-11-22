@@ -79,6 +79,23 @@ class Cita
         return $filas;
     }
 
+    // Devuelve todas las citas del taller con el vehículo, el cliente y el mecánico (para la oficina)
+    // El mecánico puede ser null, por eso se une con LEFT JOIN
+    function getCitas()
+    {
+        $sql = "SELECT c.id_cita, c.matricula, v.marca, v.modelo, cli.nombre AS cliente,
+                       c.id_mecanico, mec.nombre AS mecanico, c.fecha_hora, c.tipo_servicio, c.motivo, c.estado
+                FROM cita c
+                JOIN vehiculo v ON v.matricula = c.matricula
+                JOIN usuario cli ON cli.id_usuario = v.id_cliente
+                LEFT JOIN usuario mec ON mec.id_usuario = c.id_mecanico
+                ORDER BY c.fecha_hora DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $filas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $filas;
+    }
+
     // Guarda en la base de datos los datos actuales del objeto
     function updateCita()
     {
