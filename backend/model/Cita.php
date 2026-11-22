@@ -84,11 +84,13 @@ class Cita
     function getCitas()
     {
         $sql = "SELECT c.id_cita, c.matricula, v.marca, v.modelo, cli.nombre AS cliente,
-                       c.id_mecanico, mec.nombre AS mecanico, c.fecha_hora, c.tipo_servicio, c.motivo, c.estado
+                       c.id_mecanico, mec.nombre AS mecanico, c.fecha_hora, c.tipo_servicio, c.motivo, c.estado,
+                       f.numero AS factura, f.total
                 FROM cita c
                 JOIN vehiculo v ON v.matricula = c.matricula
                 JOIN usuario cli ON cli.id_usuario = v.id_cliente
                 LEFT JOIN usuario mec ON mec.id_usuario = c.id_mecanico
+                LEFT JOIN factura f ON f.id_cita = c.id_cita
                 ORDER BY c.fecha_hora DESC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();

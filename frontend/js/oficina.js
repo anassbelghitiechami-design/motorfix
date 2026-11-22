@@ -124,6 +124,19 @@ function pintarCitas(){
             pintarAccionesPendiente(cita, celdas[4], fila.querySelector(".acciones-tabla"));
         }
 
+        //las finalizadas se facturan (si ya tienen factura se enseña su numero y el total)
+        if (cita.estado == "finalizada") {
+            const acciones = fila.querySelector(".acciones-tabla");
+            if (cita.factura) {
+                acciones.textContent = "Factura " + cita.factura + " · " + Number(cita.total).toFixed(2).replace(".", ",") + " €";
+            } else {
+                acciones.innerHTML = '<button type="button" class="boton boton-pequeno">Generar factura</button>';
+                acciones.querySelector("button").addEventListener("click", (event) => {
+                    generarFactura(cita);
+                });
+            }
+        }
+
         tabla.appendChild(fila);
         pintadas++;
     }
@@ -193,6 +206,44 @@ function rechazarCita(cita){
         } else {
             mostrarMensaje(response.msg, "error");
         }
+    });
+}
+
+
+//pide a factura_sw.php que calcule y guarde la factura de la reparacion terminada
+function generarFactura(cita){
+    let seguro = confirm("¿Generar la factura de la reparación de " + cita.cliente + " (" + cita.matricula + ")?");
+    if (!seguro) {
+        return;
+    }
+
+    let request = {};
+    request.action = "generar";
+    request.data = {
+        id_cita: cita.id_cita
+    };
+
+    fetch("../backend/sw/factura_sw.php", {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+
+        if (response.success) {
+            mostrarMensaje(response.msg, "exito");
+            listarCitas(); //para que salga el numero de factura en la fila
+        } else {
+            mostrarMensaje(response.msg, "error");
+        }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 

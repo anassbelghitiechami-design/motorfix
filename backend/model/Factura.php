@@ -83,6 +83,30 @@ class Factura
         ];
     }
 
+    // Pone en el objeto el siguiente numero de factura del año: 2026-0001, 2026-0002...
+    // Las facturas tienen que ir numeradas seguidas dentro de cada año (visto en wikipedia: "Factura")
+    function siguienteNumero()
+    {
+        $anio = date("Y");
+        $patron = $anio . "-%";
+
+        $sql = "SELECT MAX(numero) AS ultimo FROM factura WHERE numero LIKE :patron";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':patron', $patron, PDO::PARAM_STR);
+        $stmt->execute();
+        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $siguiente = 1;
+        if ($fila["ultimo"] != null) {
+            // "2026-0007" -> nos quedamos con "0007" -> 7 -> 8
+            $siguiente = (int) substr($fila["ultimo"], 5) + 1;
+        }
+
+        // sprintf con %04d rellena con ceros a la izquierda hasta 4 cifras: 8 -> 0008
+        $this->numero = $anio . "-" . sprintf("%04d", $siguiente);
+        return $this->numero;
+    }
+
     // Devuelve los datos de la factura o false si no existe
     function getFactura()
     {
