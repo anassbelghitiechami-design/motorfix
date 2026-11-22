@@ -59,6 +59,19 @@ class Usuario
         return $fila;
     }
 
+    // Devuelve los mecánicos (id y nombre) para el desplegable de la oficina
+    function getMecanicos()
+    {
+        $sql = "SELECT u.id_usuario, u.nombre
+                FROM usuario u
+                JOIN mecanico m ON m.id_usuario = u.id_usuario
+                ORDER BY u.nombre";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $filas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $filas;
+    }
+
     // Borra el usuario (si es cliente o mecánico, su fila en cliente/mecanico se borra en cascada)
     function deleteUsuario()
     {
