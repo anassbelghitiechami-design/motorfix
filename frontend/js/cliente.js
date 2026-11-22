@@ -3,13 +3,15 @@
 
 const urlVehiculo = "../backend/sw/vehiculo_sw.php";
 const urlCita = "../backend/sw/cita_sw.php";
+const urlFactura = "../backend/sw/factura_sw.php";
 
 //matricula del vehiculo que se esta editando. Si es null, el formulario es para añadir uno nuevo
 let matriculaEditando = null;
 
-//al abrir la pagina pedimos los vehiculos y las citas del cliente
+//al abrir la pagina pedimos los vehiculos, las citas y las facturas del cliente
 listarVehiculos();
 listarCitas();
+listarFacturas();
 
 //la fecha de la cita no puede ser anterior a hoy (toISOString da 2026-11-14T..., nos quedamos con la fecha)
 document.getElementById("fecha").min = new Date().toISOString().substring(0, 10);
@@ -394,6 +396,78 @@ function solicitarCita(){
         console.error("Error:", error);
         mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
+}
+
+
+//pide al servidor las facturas del cliente y las pinta
+function listarFacturas(){
+    let request = {};
+    request.action = "listarCliente";
+
+    fetch(urlFactura, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+
+        if (data.success) {
+            pintarFacturas(data.data);
+        } else {
+            mostrarMensaje(data.msg, "error");
+        }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
+    });
+}
+
+
+//una fila por factura con el vehiculo, la fecha, el desglose (base + IVA) y el total
+function pintarFacturas(facturas){
+    const lista = document.getElementById("listaFacturas");
+    lista.innerHTML = "";
+
+    if (facturas.length == 0) {
+        lista.innerHTML = '<li class="fila"><p class="detalle">Todavía no tienes facturas.</p></li>';
+        return;
+    }
+
+    for (let i = 0; i < facturas.length; i++) {
+        const factura = facturas[i];
+
+        //la fecha viene como "2026-11-22"
+        const fecha = factura.fecha.split("-");
+
+        const fila = document.createElement("li");
+        fila.className = "fila";
+        fila.innerHTML = `
+            <div class="fila-texto">
+                <p class="fila-titulo"></p>
+                <p class="detalle"></p>
+                <p class="detalle desglose"></p>
+            </div>
+            <p class="total"></p>
+        `;
+
+        fila.querySelector(".fila-titulo").textContent = "Factura " + factura.numero;
+        fila.querySelector(".detalle").textContent = factura.marca + " " + factura.modelo + " · " + factura.tipo_servicio + " · " + fecha[2] + "/" + fecha[1] + "/" + fecha[0];
+        fila.querySelector(".desglose").textContent = "Base " + formatearEuros(factura.base_imponible) + " + IVA " + Number(factura.iva_pct) + "% " + formatearEuros(factura.cuota_iva);
+        fila.querySelector(".total").textContent = formatearEuros(factura.total);
+
+        lista.appendChild(fila);
+    }
+}
+
+
+//93.4 -> "93,40 €" (toFixed deja 2 decimales y cambiamos el punto por coma)
+function formatearEuros(numero){
+    return Number(numero).toFixed(2).replace(".", ",") + " €";
 }
 
 

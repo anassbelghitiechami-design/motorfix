@@ -3,8 +3,8 @@ require_once __DIR__ . '/../model/Factura.php';
 require_once __DIR__ . '/../model/Cita.php';
 require_once __DIR__ . '/control_acceso.php';
 
-//La oficina genera las facturas (control_acceso.php ya hace el session_start)
-comprobarAcceso(["oficina"]);
+//La oficina genera las facturas y el cliente consulta las suyas (control_acceso.php ya hace el session_start)
+comprobarAcceso(["oficina", "cliente"]);
 
 //Indicar que es una respuesta JSON, es decir, para que la web reconozca el archivo como un JSON
 header("Content-Type: application/json; charset=UTF-8");
@@ -22,7 +22,19 @@ $msg = "";
 $data = [];
 
 switch ($request["action"]){
+    case "listarCliente":
+        //cada cliente solo ve sus facturas: el id sale de la sesion, no del JSON
+        comprobarAcceso(["cliente"]);
+
+        $factura = new Factura();
+        $data = $factura->getFacturasCliente($_SESSION["id_usuario"]);
+        $msg = "Facturas obtenidas correctamente";
+        break;
+
     case "generar":
+        //generar facturas es solo cosa de la oficina
+        comprobarAcceso(["oficina"]);
+
         $id_cita = $request["data"]["id_cita"];
 
         //solo se factura una reparacion que el mecanico ha terminado

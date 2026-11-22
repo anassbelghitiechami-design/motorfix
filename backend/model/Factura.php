@@ -107,6 +107,24 @@ class Factura
         return $this->numero;
     }
 
+    // Devuelve las facturas de un cliente con el vehículo y el servicio (la factura no guarda el cliente,
+    // por eso se une con cita y vehiculo para saber de quién es)
+    function getFacturasCliente($id_cliente)
+    {
+        $sql = "SELECT f.numero, f.fecha, f.base_imponible, f.iva_pct, f.cuota_iva, f.total,
+                       c.tipo_servicio, v.matricula, v.marca, v.modelo
+                FROM factura f
+                JOIN cita c ON c.id_cita = f.id_cita
+                JOIN vehiculo v ON v.matricula = c.matricula
+                WHERE v.id_cliente = :id_cliente
+                ORDER BY f.numero DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id_cliente', $id_cliente, PDO::PARAM_INT);
+        $stmt->execute();
+        $filas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $filas;
+    }
+
     // Devuelve los datos de la factura o false si no existe
     function getFactura()
     {
