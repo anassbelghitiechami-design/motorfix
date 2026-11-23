@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotorFix · Administración</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/paneles.css">
+</head>
+<body>
+
+    <!-- ---------- Cabecera ---------- -->
+    <header class="cabecera-panel">
+        <a class="logo" href="admin.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"></path>
+            </svg>
+            <span>MOTORFIX</span>
+        </a>
+
+        <nav class="menu" aria-label="Secciones">
+            <a href="#metricas" class="activo">Métricas</a>
+            <a href="#usuarios">Usuarios</a>
+        </nav>
+
+        <div class="usuario">
+            <span class="avatar" id="iniciales"></span>
+            <a href="login.html" id="salir">Salir</a>
+        </div>
+    </header>
+
+    <main class="panel">
+
+        <!-- ---------- Saludo ---------- -->
+        <div class="saludo">
+            <p>Hola, <span id="nombreUsuario">[NOMBRE]</span></p>
+            <h1>Administración del taller</h1>
+        </div>
+
+        <!-- Aquí se mostrará el msg del servidor (éxito o error) -->
+        <div id="mensaje" class="mensaje oculto" role="alert"></div>
+
+        <!-- ---------- Métricas del taller ---------- -->
+        <section id="metricas" class="seccion" aria-labelledby="tituloMetricas">
+            <div class="seccion-cabecera">
+                <h2 id="tituloMetricas">Métricas del taller</h2>
+            </div>
+
+            <!-- los numeros los pone admin.js con los datos de admin_sw.php -->
+            <div class="metricas">
+                <div class="metrica">
+                    <p class="detalle">Facturación (con IVA)</p>
+                    <p class="metrica-valor" id="facturacionTotal">0,00 €</p>
+                    <p class="detalle" id="facturacionDetalle"></p>
+                </div>
+                <div class="metrica">
+                    <p class="detalle">Citas</p>
+                    <p class="metrica-valor" id="totalCitas">0</p>
+                    <p class="detalle" id="citasDetalle"></p>
+                </div>
+                <div class="metrica">
+                    <p class="detalle">Clientes</p>
+                    <p class="metrica-valor" id="totalClientes">0</p>
+                </div>
+                <div class="metrica">
+                    <p class="detalle">Vehículos</p>
+                    <p class="metrica-valor" id="totalVehiculos">0</p>
+                </div>
+            </div>
+
+            <!-- citas que hay en cada estado -->
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>Estado</th>
+                            <th>Citas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaEstados"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ---------- Usuarios ---------- -->
+        <section id="usuarios" class="seccion" aria-labelledby="tituloUsuarios">
+            <div class="seccion-cabecera">
+                <h2 id="tituloUsuarios">Usuarios</h2>
+            </div>
+
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <!-- las filas las pinta admin.js con los datos de admin_sw.php -->
+                    <tbody id="tablaUsuarios"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/sesion.js"></script>
+    <script>comprobarSesion("admin");</script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

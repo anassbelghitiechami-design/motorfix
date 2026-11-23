@@ -3,13 +3,15 @@
 
 const urlVehiculo = "../backend/sw/vehiculo_sw.php";
 const urlCita = "../backend/sw/cita_sw.php";
+const urlFactura = "../backend/sw/factura_sw.php";
 
 //matricula del vehiculo que se esta editando. Si es null, el formulario es para añadir uno nuevo
 let matriculaEditando = null;
 
-//al abrir la pagina pedimos los vehiculos y las citas del cliente
+//al abrir la pagina pedimos los vehiculos, las citas y las facturas del cliente
 listarVehiculos();
 listarCitas();
+listarFacturas();
 
 //la fecha de la cita no puede ser anterior a hoy (toISOString da 2026-11-14T..., nos quedamos con la fecha)
 document.getElementById("fecha").min = new Date().toISOString().substring(0, 10);
@@ -80,24 +82,22 @@ function pintarVehiculos(vehiculos){
 
         const tarjeta = document.createElement("article");
         tarjeta.className = "tarjeta vehiculo";
-        tarjeta.innerHTML = `
-            <div class="vehiculo-cabecera">
-                <span class="matricula"></span>
-            </div>
-            <div>
-                <p class="vehiculo-nombre"></p>
-                <p class="detalle"></p>
-            </div>
-            <div class="vehiculo-acciones">
-                <a href="#pedir" class="boton">Pedir cita</a>
-                <button type="button" class="boton-cuadrado boton-editar" aria-label="Editar vehículo">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
-                </button>
-                <button type="button" class="boton-cuadrado boton-borrar" aria-label="Borrar vehículo">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"></path></svg>
-                </button>
-            </div>
-        `;
+        tarjeta.innerHTML = '<div class="vehiculo-cabecera">' +
+    '<span class="matricula"></span>' +
+    '</div>' +
+    '<div>' +
+    '<p class="vehiculo-nombre"></p>' +
+    '<p class="detalle"></p>' +
+    '</div>' +
+    '<div class="vehiculo-acciones">' +
+    '<a href="#pedir" class="boton">Pedir cita</a>' +
+    '<button type="button" class="boton-cuadrado boton-editar" aria-label="Editar vehículo">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>' +
+    '</button>' +
+    '<button type="button" class="boton-cuadrado boton-borrar" aria-label="Borrar vehículo">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"></path></svg>' +
+    '</button>' +
+    '</div>';
 
         //los datos se ponen con textContent para que no se interpreten como HTML
         tarjeta.querySelector(".matricula").textContent = vehiculo.matricula;
@@ -311,14 +311,12 @@ function pintarCitas(citas){
 
         const fila = document.createElement("li");
         fila.className = "fila";
-        fila.innerHTML = `
-            <p class="fecha-cita"><span class="dia"></span> <span class="mes"></span></p>
-            <div class="fila-texto">
-                <p class="fila-titulo"></p>
-                <p class="detalle"></p>
-            </div>
-            <span class="estado"></span>
-        `;
+        fila.innerHTML = '<p class="fecha-cita"><span class="dia"></span> <span class="mes"></span></p>' +
+             '<div class="fila-texto">' +
+             '<p class="fila-titulo"></p>' +
+             '<p class="detalle"></p>' +
+             '</div>' +
+             '<span class="estado"></span>';
 
         fila.querySelector(".dia").textContent = fecha[2];
         fila.querySelector(".mes").textContent = meses[parseInt(fecha[1]) - 1];
@@ -397,12 +395,80 @@ function solicitarCita(){
 }
 
 
+//pide al servidor las facturas del cliente y las pinta
+function listarFacturas(){
+    let request = {};
+    request.action = "listarCliente";
+
+    fetch(urlFactura, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+
+        if (data.success) {
+            pintarFacturas(data.data);
+        } else {
+            mostrarMensaje(data.msg, "error");
+        }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
+    });
+}
+
+
+//una fila por factura con el vehiculo, la fecha, el desglose (base + IVA) y el total
+function pintarFacturas(facturas){
+    const lista = document.getElementById("listaFacturas");
+    lista.innerHTML = "";
+
+    if (facturas.length == 0) {
+        lista.innerHTML = '<li class="fila"><p class="detalle">Todavía no tienes facturas.</p></li>';
+        return;
+    }
+
+    for (let i = 0; i < facturas.length; i++) {
+        const factura = facturas[i];
+
+        //la fecha viene como "2026-11-22"
+        const fecha = factura.fecha.split("-");
+
+        const fila = document.createElement("li");
+        fila.className = "fila";
+        fila.innerHTML = '<div class="fila-texto">' +
+             '<p class="fila-titulo"></p>' +
+             '<p class="detalle"></p>' +
+             '<p class="detalle desglose"></p>' +
+             '</div>' +
+             '<p class="total"></p>';
+
+        fila.querySelector(".fila-titulo").textContent = "Factura " + factura.numero;
+        fila.querySelector(".detalle").textContent = factura.marca + " " + factura.modelo + " · " + factura.tipo_servicio + " · " + fecha[2] + "/" + fecha[1] + "/" + fecha[0];
+        fila.querySelector(".desglose").textContent = "Base " + formatearEuros(factura.base_imponible) + " + IVA " + Number(factura.iva_pct) + "% " + formatearEuros(factura.cuota_iva);
+        fila.querySelector(".total").textContent = formatearEuros(factura.total);
+
+        lista.appendChild(fila);
+    }
+}
+
+
+//93.4 -> "93,40 €" (toFixed deja 2 decimales y cambiamos el punto por coma)
+function formatearEuros(numero){
+    return Number(numero).toFixed(2).replace(".", ",") + " €";
+}
+
+
 //enseña el msg del servidor en el div de mensaje (en vez de un alert). tipo puede ser "error" o "exito"
 function mostrarMensaje(texto, tipo){
     const mensaje = document.getElementById("mensaje");
     mensaje.textContent = texto;
     mensaje.classList.remove("oculto", "mensaje-error", "mensaje-exito");
     mensaje.classList.add("mensaje-" + tipo);
-    //el div esta arriba del todo, asi que lo llevamos a la vista para que se lea
-    mensaje.scrollIntoView({ behavior: "smooth", block: "center" });
 }
