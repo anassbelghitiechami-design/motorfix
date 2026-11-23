@@ -35,12 +35,12 @@ buttonGuardarVehiculo.addEventListener("click", (event) => {
 });
 
 
-//como todas las peticiones de este panel van al mismo sw, esta funcion hace el fetch
-//y le pasa la respuesta a la funcion que le digamos (alFinalizar)
-function peticion(action, data, alFinalizar){
+// ---------- Citas ----------
+
+//los mecanicos hacen falta para el desplegable de cada cita pendiente, por eso las citas se piden despues
+function listarMecanicos(){
     let request = {};
-    request.action = action;
-    request.data = data;
+    request.action = "listarMecanicos";
 
     fetch(urlOficina, {
         method: "POST",
@@ -52,7 +52,13 @@ function peticion(action, data, alFinalizar){
     .then(response => response.json())
     .then(response => {
         console.log(response);
-        alFinalizar(response);
+
+        if (response.success) {
+            mecanicos = response.data;
+            listarCitas();
+        } else {
+            mostrarMensaje(response.msg, "error");
+        }
     })
     .catch(function (error) {
         console.log("Hubo un problema con la peticion fetch:" + error.message);
@@ -61,29 +67,31 @@ function peticion(action, data, alFinalizar){
 }
 
 
-// ---------- Citas ----------
-
-//los mecanicos hacen falta para el desplegable de cada cita pendiente, por eso las citas se piden despues
-function listarMecanicos(){
-    peticion("listarMecanicos", {}, (response) => {
-        if (response.success) {
-            mecanicos = response.data;
-            listarCitas();
-        } else {
-            mostrarMensaje(response.msg, "error");
-        }
-    });
-}
-
-
 function listarCitas(){
-    peticion("listarCitas", {}, (response) => {
+    let request = {};
+    request.action = "listarCitas";
+
+    fetch(urlOficina, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+
         if (response.success) {
             citas = response.data;
             pintarCitas();
         } else {
             mostrarMensaje(response.msg, "error");
         }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
@@ -103,11 +111,9 @@ function pintarCitas(){
         }
 
         const fila = document.createElement("tr");
-        fila.innerHTML = `
-            <td></td><td></td><td></td><td></td><td></td>
-            <td><span class="estado"></span></td>
-            <td><div class="acciones-tabla"></div></td>
-        `;
+        fila.innerHTML = '<td></td><td></td><td></td><td></td><td></td>' +
+    '<td><span class="estado"></span></td>' +
+    '<td><div class="acciones-tabla"></div></td>';
         const celdas = fila.querySelectorAll("td");
         celdas[0].textContent = formatearFecha(cita.fecha_hora);
         celdas[1].textContent = cita.cliente;
@@ -161,10 +167,8 @@ function pintarAccionesPendiente(cita, celdaMecanico, acciones){
     celdaMecanico.innerHTML = "";
     celdaMecanico.appendChild(select);
 
-    acciones.innerHTML = `
-        <button type="button" class="boton boton-pequeno">Confirmar</button>
-        <button type="button" class="boton boton-secundario boton-pequeno">Rechazar</button>
-    `;
+    acciones.innerHTML = '<button type="button" class="boton boton-pequeno">Confirmar</button>' +
+            '<button type="button" class="boton boton-secundario boton-pequeno">Rechazar</button>';
     const botones = acciones.querySelectorAll("button");
 
     botones[0].addEventListener("click", (event) => {
@@ -182,13 +186,31 @@ function validarCita(cita, id_mecanico){
         return;
     }
 
-    peticion("validarCita", { id_cita: cita.id_cita, id_mecanico: id_mecanico }, (response) => {
+    let request = {};
+    request.action = "validarCita";
+    request.data = { id_cita: cita.id_cita, id_mecanico: id_mecanico };
+
+    fetch(urlOficina, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+
         if (response.success) {
             mostrarMensaje(response.msg, "exito");
             listarCitas();
         } else {
             mostrarMensaje(response.msg, "error");
         }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
@@ -199,13 +221,31 @@ function rechazarCita(cita){
         return;
     }
 
-    peticion("rechazarCita", { id_cita: cita.id_cita }, (response) => {
+    let request = {};
+    request.action = "rechazarCita";
+    request.data = { id_cita: cita.id_cita };
+
+    fetch(urlOficina, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+
         if (response.success) {
             mostrarMensaje(response.msg, "exito");
             listarCitas();
         } else {
             mostrarMensaje(response.msg, "error");
         }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
@@ -259,12 +299,29 @@ function formatearFecha(fechaHora){
 // ---------- Clientes ----------
 
 function listarClientes(){
-    peticion("listarClientes", {}, (response) => {
+    let request = {};
+    request.action = "listarClientes";
+
+    fetch(urlOficina, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+
         if (response.success) {
             pintarClientes(response.data);
         } else {
             mostrarMensaje(response.msg, "error");
         }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
@@ -306,12 +363,29 @@ function pintarClientes(clientes){
 // ---------- Vehiculos ----------
 
 function listarVehiculos(){
-    peticion("listarVehiculos", {}, (response) => {
+    let request = {};
+    request.action = "listarVehiculos";
+
+    fetch(urlOficina, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+
         if (response.success) {
             pintarVehiculos(response.data);
         } else {
             mostrarMensaje(response.msg, "error");
         }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
@@ -329,10 +403,8 @@ function pintarVehiculos(vehiculos){
         const vehiculo = vehiculos[i];
 
         const fila = document.createElement("tr");
-        fila.innerHTML = `
-            <td></td><td></td><td></td><td></td>
-            <td><button type="button" class="boton boton-secundario boton-pequeno">Borrar</button></td>
-        `;
+        fila.innerHTML = '<td></td><td></td><td></td><td></td>' +
+        '<td><button type="button" class="boton boton-secundario boton-pequeno">Borrar</button></td>';
         const celdas = fila.querySelectorAll("td");
         celdas[0].textContent = vehiculo.matricula;
         celdas[1].textContent = vehiculo.marca + " " + vehiculo.modelo;
@@ -361,7 +433,21 @@ function guardarVehiculo(){
         return;
     }
 
-    peticion("insertarVehiculo", vehiculo, (response) => {
+    let request = {};
+    request.action = "insertarVehiculo";
+    request.data = vehiculo;
+
+    fetch(urlOficina, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+
         if (response.success) {
             mostrarMensaje(response.msg, "exito");
             document.getElementById("formVehiculo").reset();
@@ -370,6 +456,10 @@ function guardarVehiculo(){
         } else {
             mostrarMensaje(response.msg, "error");
         }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
@@ -381,7 +471,21 @@ function borrarVehiculo(vehiculo){
         return;
     }
 
-    peticion("borrarVehiculo", { matricula: vehiculo.matricula }, (response) => {
+    let request = {};
+    request.action = "borrarVehiculo";
+    request.data = { matricula: vehiculo.matricula };
+
+    fetch(urlOficina, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+
         if (response.success) {
             mostrarMensaje(response.msg, "exito");
             listarVehiculos();
@@ -389,6 +493,10 @@ function borrarVehiculo(vehiculo){
         } else {
             mostrarMensaje(response.msg, "error");
         }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
@@ -399,6 +507,4 @@ function mostrarMensaje(texto, tipo){
     mensaje.textContent = texto;
     mensaje.classList.remove("oculto", "mensaje-error", "mensaje-exito");
     mensaje.classList.add("mensaje-" + tipo);
-    //el div esta arriba del todo, asi que lo llevamos a la vista para que se lea
-    mensaje.scrollIntoView({ behavior: "smooth", block: "center" });
 }

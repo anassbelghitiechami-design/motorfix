@@ -85,11 +85,24 @@ class Usuario
         return $filas;
     }
 
-    // Da de alta al usuario del objeto en la tabla mecanico (especializacion de usuario).
-    // INSERT IGNORE no da error si ya estaba
+    // Devuelve true si el usuario del objeto ya esta en la tabla mecanico
+    function esMecanico()
+    {
+        $sql = "SELECT id_usuario FROM mecanico WHERE id_usuario = :id_usuario";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id_usuario', $this->id_usuario, PDO::PARAM_INT);
+        $stmt->execute();
+        $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($fila) {
+            return true;
+        }
+        return false;
+    }
+
+    // Da de alta al usuario del objeto en la tabla mecanico (especializacion de usuario)
     function insertMecanico()
     {
-        $sql = "INSERT IGNORE INTO mecanico (id_usuario) VALUES (:id_usuario)";
+        $sql = "INSERT INTO mecanico (id_usuario) VALUES (:id_usuario)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':id_usuario', $this->id_usuario, PDO::PARAM_INT);
         $stmt->execute();

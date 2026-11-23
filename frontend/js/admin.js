@@ -25,12 +25,11 @@ cargarMetricas();
 listarUsuarios();
 
 
-//como todas las peticiones de este panel van al mismo sw, esta funcion hace el fetch
-//y le pasa la respuesta a la funcion que le digamos (alFinalizar)
-function peticion(action, data, alFinalizar){
+// ---------- Metricas ----------
+
+function cargarMetricas(){
     let request = {};
-    request.action = action;
-    request.data = data;
+    request.action = "metricas";
 
     fetch(urlAdmin, {
         method: "POST",
@@ -42,24 +41,16 @@ function peticion(action, data, alFinalizar){
     .then(response => response.json())
     .then(response => {
         console.log(response);
-        alFinalizar(response);
-    })
-    .catch(function (error) {
-        console.log("Hubo un problema con la peticion fetch:" + error.message);
-        mostrarMensaje("No se ha podido conectar con el servidor", "error");
-    });
-}
 
-
-// ---------- Metricas ----------
-
-function cargarMetricas(){
-    peticion("metricas", {}, (response) => {
         if (response.success) {
             pintarMetricas(response.data);
         } else {
             mostrarMensaje(response.msg, "error");
         }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
@@ -80,8 +71,9 @@ function pintarMetricas(metricas){
     const tabla = document.getElementById("tablaEstados");
     tabla.innerHTML = "";
 
-    //for...in recorre las claves del objeto: pendiente, confirmada...
-    for (let estado in metricas.citas) {
+    const estados = ["pendiente", "confirmada", "rechazada", "en_curso", "finalizada"];
+    for (let i = 0; i < estados.length; i++) {
+        const estado = estados[i];
         const fila = document.createElement("tr");
         fila.innerHTML = '<td><span class="estado"></span></td><td></td>';
         const etiqueta = fila.querySelector(".estado");
@@ -102,12 +94,29 @@ function formatearEuros(numero){
 // ---------- Usuarios ----------
 
 function listarUsuarios(){
-    peticion("listarUsuarios", {}, (response) => {
+    let request = {};
+    request.action = "listarUsuarios";
+
+    fetch(urlAdmin, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+
         if (response.success) {
             pintarUsuarios(response.data);
         } else {
             mostrarMensaje(response.msg, "error");
         }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
@@ -131,11 +140,9 @@ function pintarUsuarios(usuarios){
         } else {
             const select = document.createElement("select");
             select.setAttribute("aria-label", "Rol de " + usuario.nombre);
-            select.innerHTML = `
-                <option value="admin">Administrador</option>
-                <option value="oficina">Oficina</option>
-                <option value="mecanico">Mecánico</option>
-            `;
+            select.innerHTML = '<option value="admin">Administrador</option>' +
+    '<option value="oficina">Oficina</option>' +
+    '<option value="mecanico">Mecánico</option>';
             select.value = usuario.rol;
             celdas[2].appendChild(select);
 
@@ -161,13 +168,31 @@ function cambiarRol(usuario, nuevoRol){
         return;
     }
 
-    peticion("cambiarRol", { id_usuario: usuario.id_usuario, rol: nuevoRol }, (response) => {
+    let request = {};
+    request.action = "cambiarRol";
+    request.data = { id_usuario: usuario.id_usuario, rol: nuevoRol };
+
+    fetch(urlAdmin, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+
         if (response.success) {
             mostrarMensaje(response.msg, "exito");
         } else {
             mostrarMensaje(response.msg, "error");
         }
         listarUsuarios(); //si ha fallado, el desplegable vuelve a su rol de verdad
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
@@ -178,6 +203,4 @@ function mostrarMensaje(texto, tipo){
     mensaje.textContent = texto;
     mensaje.classList.remove("oculto", "mensaje-error", "mensaje-exito");
     mensaje.classList.add("mensaje-" + tipo);
-    //el div esta arriba del todo, asi que lo llevamos a la vista para que se lea
-    mensaje.scrollIntoView({ behavior: "smooth", block: "center" });
 }

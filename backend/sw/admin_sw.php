@@ -91,7 +91,8 @@ switch ($request["action"]){
         $usuario->updateUsuario();
 
         //si pasa a ser mecanico tiene que estar tambien en la tabla mecanico
-        if ($nuevoRol == "mecanico") {
+        //(si ya estaba de antes no se vuelve a meter)
+        if ($nuevoRol == "mecanico" && !$usuario->esMecanico()) {
             $usuario->insertMecanico();
         }
 

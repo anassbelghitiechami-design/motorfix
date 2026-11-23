@@ -42,12 +42,11 @@ buttonPieza.addEventListener("click", (event) => {
 });
 
 
-//como todas las peticiones de este panel van al mismo sw, esta funcion hace el fetch
-//y le pasa la respuesta a la funcion que le digamos (alFinalizar)
-function peticion(action, data, alFinalizar){
+// ---------- Hoja de trabajo ----------
+
+function listarHoja(){
     let request = {};
-    request.action = action;
-    request.data = data;
+    request.action = "listar";
 
     fetch(urlMecanico, {
         method: "POST",
@@ -59,24 +58,16 @@ function peticion(action, data, alFinalizar){
     .then(response => response.json())
     .then(response => {
         console.log(response);
-        alFinalizar(response);
-    })
-    .catch(function (error) {
-        console.log("Hubo un problema con la peticion fetch:" + error.message);
-        mostrarMensaje("No se ha podido conectar con el servidor", "error");
-    });
-}
 
-
-// ---------- Hoja de trabajo ----------
-
-function listarHoja(){
-    peticion("listar", {}, (response) => {
         if (response.success) {
             pintarHoja(response.data);
         } else {
             mostrarMensaje(response.msg, "error");
         }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
@@ -95,11 +86,9 @@ function pintarHoja(citas){
         const cita = citas[i];
 
         const fila = document.createElement("tr");
-        fila.innerHTML = `
-            <td></td><td></td><td></td><td></td>
-            <td><span class="estado"></span></td>
-            <td><button type="button" class="boton boton-secundario boton-pequeno">Abrir</button></td>
-        `;
+        fila.innerHTML = '<td></td><td></td><td></td><td></td>' +
+    '<td><span class="estado"></span></td>' +
+    '<td><button type="button" class="boton boton-secundario boton-pequeno">Abrir</button></td>';
         const celdas = fila.querySelectorAll("td");
         celdas[0].textContent = formatearFecha(cita.fecha_hora);
         celdas[1].textContent = cita.marca + " " + cita.modelo + " · " + cita.matricula;
@@ -181,24 +170,60 @@ function guardarManoObra(){
         return;
     }
 
-    peticion("guardarManoObra", manoObra, (response) => {
+    let request = {};
+    request.action = "guardarManoObra";
+    request.data = manoObra;
+
+    fetch(urlMecanico, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+
         if (response.success) {
             mostrarMensaje(response.msg, "exito");
             listarHoja(); //para que la cita abierta tenga las horas nuevas
         } else {
             mostrarMensaje(response.msg, "error");
         }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
 
 function listarPiezas(){
-    peticion("listarPiezas", { id_cita: citaAbierta.id_cita }, (response) => {
+    let request = {};
+    request.action = "listarPiezas";
+    request.data = { id_cita: citaAbierta.id_cita };
+
+    fetch(urlMecanico, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+
         if (response.success) {
             pintarPiezas(response.data);
         } else {
             mostrarMensaje(response.msg, "error");
         }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
@@ -217,10 +242,8 @@ function pintarPiezas(piezas){
         const pieza = piezas[i];
 
         const fila = document.createElement("tr");
-        fila.innerHTML = `
-            <td></td><td></td><td></td><td></td><td></td>
-            <td><button type="button" class="boton boton-secundario boton-pequeno">Quitar</button></td>
-        `;
+        fila.innerHTML = '<td></td><td></td><td></td><td></td><td></td>' +
+            '<td><button type="button" class="boton boton-secundario boton-pequeno">Quitar</button></td>';
         const celdas = fila.querySelectorAll("td");
         celdas[0].textContent = pieza.referencia;
         celdas[1].textContent = pieza.descripcion;
@@ -252,7 +275,21 @@ function anadirPieza(){
         return;
     }
 
-    peticion("anadirPieza", pieza, (response) => {
+    let request = {};
+    request.action = "anadirPieza";
+    request.data = pieza;
+
+    fetch(urlMecanico, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+
         if (response.success) {
             mostrarMensaje(response.msg, "exito");
             document.getElementById("formPieza").reset();
@@ -260,6 +297,10 @@ function anadirPieza(){
         } else {
             mostrarMensaje(response.msg, "error");
         }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
@@ -270,13 +311,31 @@ function quitarPieza(pieza){
         return;
     }
 
-    peticion("quitarPieza", { id_cita_pieza: pieza.id_cita_pieza }, (response) => {
+    let request = {};
+    request.action = "quitarPieza";
+    request.data = { id_cita_pieza: pieza.id_cita_pieza };
+
+    fetch(urlMecanico, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+
         if (response.success) {
             mostrarMensaje(response.msg, "exito");
             listarPiezas();
         } else {
             mostrarMensaje(response.msg, "error");
         }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
@@ -296,13 +355,31 @@ function cambiarEstado(nuevoEstado){
         }
     }
 
-    peticion("cambiarEstado", { id_cita: citaAbierta.id_cita, estado: nuevoEstado }, (response) => {
+    let request = {};
+    request.action = "cambiarEstado";
+    request.data = { id_cita: citaAbierta.id_cita, estado: nuevoEstado };
+
+    fetch(urlMecanico, {
+        method: "POST",
+        body: JSON.stringify(request),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response);
+
         if (response.success) {
             mostrarMensaje(response.msg, "exito");
             listarHoja(); //al pintar la hoja se vuelve a abrir la cita con el estado nuevo
         } else {
             mostrarMensaje(response.msg, "error");
         }
+    })
+    .catch(function (error) {
+        console.log("Hubo un problema con la peticion fetch:" + error.message);
+        mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
 }
 
@@ -321,6 +398,4 @@ function mostrarMensaje(texto, tipo){
     mensaje.textContent = texto;
     mensaje.classList.remove("oculto", "mensaje-error", "mensaje-exito");
     mensaje.classList.add("mensaje-" + tipo);
-    //el div esta arriba del todo, asi que lo llevamos a la vista para que se lea
-    mensaje.scrollIntoView({ behavior: "smooth", block: "center" });
 }
