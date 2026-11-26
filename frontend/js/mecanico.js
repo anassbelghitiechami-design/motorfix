@@ -73,35 +73,42 @@ function listarHoja(){
 
 
 //una fila por cita asignada en #tablaHoja con el boton Abrir
+//Como no sabemos cuantas citas tiene el mecanico, cada etiqueta se crea con createElement,
+//se le pone el dato con textContent (asi no se ejecuta como HTML) y se mete en la pagina con appendChild.
+//Son metodos del DOM, igual que getElementById (https://es.wikipedia.org/wiki/Document_Object_Model)
 function pintarHoja(citas){
     const tabla = document.getElementById("tablaHoja");
-    tabla.innerHTML = "";
+    tabla.textContent = ""; //borramos las filas que hubiera antes
 
     if (citas.length == 0) {
-        tabla.innerHTML = '<tr><td colspan="6" class="detalle">No tienes reparaciones asignadas.</td></tr>';
+        tabla.appendChild(crearFilaVacia("No tienes reparaciones asignadas.", 6));
         return;
     }
 
     for (let i = 0; i < citas.length; i++) {
         const cita = citas[i];
 
+        //una fila <tr> con una celda <td> por columna
         const fila = document.createElement("tr");
-        fila.innerHTML = '<td></td><td></td><td></td><td></td>' +
-    '<td><span class="estado"></span></td>' +
-    '<td><button type="button" class="boton boton-secundario boton-pequeno">Abrir</button></td>';
-        const celdas = fila.querySelectorAll("td");
-        celdas[0].textContent = formatearFecha(cita.fecha_hora);
-        celdas[1].textContent = cita.marca + " " + cita.modelo + " · " + cita.matricula;
-        celdas[2].textContent = cita.cliente;
-        celdas[3].textContent = cita.tipo_servicio + (cita.motivo ? " · " + cita.motivo : "");
+        crearCelda(fila, formatearFecha(cita.fecha_hora));
+        crearCelda(fila, cita.marca + " " + cita.modelo + " · " + cita.matricula);
+        crearCelda(fila, cita.cliente);
+        crearCelda(fila, cita.tipo_servicio + (cita.motivo ? " · " + cita.motivo : ""));
 
-        const estado = fila.querySelector(".estado");
+        //la etiqueta del estado (la clase estado-xxx le da el color)
+        const celdaEstado = crearCelda(fila, "");
+        const estado = document.createElement("span");
+        estado.className = "estado estado-" + cita.estado;
         estado.textContent = textosEstado[cita.estado];
-        estado.classList.add("estado-" + cita.estado);
+        celdaEstado.appendChild(estado);
 
-        fila.querySelector("button").addEventListener("click", (event) => {
+        //la ultima celda tiene el boton Abrir
+        const celdaAbrir = crearCelda(fila, "");
+        const botonAbrir = crearBoton("Abrir", "boton boton-secundario boton-pequeno");
+        botonAbrir.addEventListener("click", (event) => {
             abrirReparacion(cita);
         });
+        celdaAbrir.appendChild(botonAbrir);
 
         tabla.appendChild(fila);
 
@@ -145,9 +152,10 @@ function abrirReparacion(cita){
 
     //las horas y las piezas solo se pueden tocar mientras el coche esta en el taller
     const editable = cita.estado == "en_curso";
-    const campos = document.querySelectorAll("#formManoObra input, #formPieza input, #formManoObra button, #formPieza button");
+    //los ids de los inputs y botones de los dos formularios
+    const campos = ["horas", "precioHora", "guardarManoObra", "referencia", "descripcion", "unidades", "precioPieza", "anadirPieza"];
     for (let i = 0; i < campos.length; i++) {
-        campos[i].disabled = !editable;
+        document.getElementById(campos[i]).disabled = !editable;
     }
 
     listarPiezas();
@@ -231,10 +239,10 @@ function listarPiezas(){
 //una fila por pieza con su importe (unidades x precio) y el boton Quitar
 function pintarPiezas(piezas){
     const tabla = document.getElementById("tablaPiezas");
-    tabla.innerHTML = "";
+    tabla.textContent = "";
 
     if (piezas.length == 0) {
-        tabla.innerHTML = '<tr><td colspan="6" class="detalle">Todavía no hay piezas en esta reparación.</td></tr>';
+        tabla.appendChild(crearFilaVacia("Todavía no hay piezas en esta reparación.", 6));
         return;
     }
 
@@ -242,20 +250,20 @@ function pintarPiezas(piezas){
         const pieza = piezas[i];
 
         const fila = document.createElement("tr");
-        fila.innerHTML = '<td></td><td></td><td></td><td></td><td></td>' +
-            '<td><button type="button" class="boton boton-secundario boton-pequeno">Quitar</button></td>';
-        const celdas = fila.querySelectorAll("td");
-        celdas[0].textContent = pieza.referencia;
-        celdas[1].textContent = pieza.descripcion;
-        celdas[2].textContent = pieza.unidades;
-        celdas[3].textContent = formatearEuros(pieza.precio);
-        celdas[4].textContent = formatearEuros(pieza.unidades * pieza.precio);
+        crearCelda(fila, pieza.referencia);
+        crearCelda(fila, pieza.descripcion);
+        crearCelda(fila, pieza.unidades);
+        crearCelda(fila, formatearEuros(pieza.precio));
+        crearCelda(fila, formatearEuros(pieza.unidades * pieza.precio));
 
-        const boton = fila.querySelector("button");
+        //la ultima celda tiene el boton Quitar (solo se puede usar si el coche esta en el taller)
+        const celdaQuitar = crearCelda(fila, "");
+        const boton = crearBoton("Quitar", "boton boton-secundario boton-pequeno");
         boton.disabled = citaAbierta.estado != "en_curso";
         boton.addEventListener("click", (event) => {
             quitarPieza(pieza);
         });
+        celdaQuitar.appendChild(boton);
 
         tabla.appendChild(fila);
     }
@@ -389,6 +397,40 @@ function formatearFecha(fechaHora){
     const partes = fechaHora.split(" ");
     const fecha = partes[0].split("-");
     return fecha[2] + "/" + fecha[1] + "/" + fecha[0] + " " + partes[1].substring(0, 5);
+}
+
+
+// ---------- Funciones para crear etiquetas ----------
+//Se usan en todas las tablas: createElement crea la etiqueta, textContent le pone el texto
+//y appendChild la mete dentro de otra (https://es.wikipedia.org/wiki/Document_Object_Model)
+
+//crea una celda <td> con el texto, la mete en la fila y la devuelve (por si hay que meterle algo mas)
+function crearCelda(fila, texto){
+    const celda = document.createElement("td");
+    celda.textContent = texto;
+    fila.appendChild(celda);
+    return celda;
+}
+
+
+//crea un <button type="button"> con su texto y sus clases
+function crearBoton(texto, clases){
+    const boton = document.createElement("button");
+    boton.type = "button";
+    boton.className = clases;
+    boton.textContent = texto;
+    return boton;
+}
+
+
+//crea la fila <tr><td colspan="..." class="detalle">texto</td></tr> que sale cuando una tabla esta vacia
+//colspan es el numero de columnas que ocupa la celda (todas las de la tabla)
+function crearFilaVacia(texto, columnas){
+    const fila = document.createElement("tr");
+    const celda = crearCelda(fila, texto);
+    celda.colSpan = columnas;
+    celda.className = "detalle";
+    return fila;
 }
 
 

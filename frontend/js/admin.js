@@ -69,17 +69,19 @@ function pintarMetricas(metricas){
 
     //una fila por estado con su numero de citas
     const tabla = document.getElementById("tablaEstados");
-    tabla.innerHTML = "";
+    tabla.textContent = "";
 
     const estados = ["pendiente", "confirmada", "rechazada", "en_curso", "finalizada"];
     for (let i = 0; i < estados.length; i++) {
         const estado = estados[i];
+        //cada etiqueta se crea con createElement, se rellena con textContent y se mete con appendChild
         const fila = document.createElement("tr");
-        fila.innerHTML = '<td><span class="estado"></span></td><td></td>';
-        const etiqueta = fila.querySelector(".estado");
+        const celdaEstado = crearCelda(fila, "");
+        const etiqueta = document.createElement("span");
+        etiqueta.className = "estado estado-" + estado;
         etiqueta.textContent = textosEstado[estado];
-        etiqueta.classList.add("estado-" + estado);
-        fila.querySelectorAll("td")[1].textContent = metricas.citas[estado];
+        celdaEstado.appendChild(etiqueta);
+        crearCelda(fila, metricas.citas[estado]);
         tabla.appendChild(fila);
     }
 }
@@ -122,34 +124,43 @@ function listarUsuarios(){
 
 
 //una fila por usuario. A los del taller se les puede cambiar el rol con un desplegable; a los clientes no
+//Como no sabemos cuantos usuarios hay, cada etiqueta se crea con createElement,
+//se le pone el dato con textContent (asi no se ejecuta como HTML) y se mete en la pagina con appendChild.
+//Son metodos del DOM, igual que getElementById (https://es.wikipedia.org/wiki/Document_Object_Model)
 function pintarUsuarios(usuarios){
     const tabla = document.getElementById("tablaUsuarios");
-    tabla.innerHTML = "";
+    tabla.textContent = "";
 
     for (let i = 0; i < usuarios.length; i++) {
         const usuario = usuarios[i];
 
         const fila = document.createElement("tr");
-        fila.innerHTML = "<td></td><td></td><td></td><td></td>";
-        const celdas = fila.querySelectorAll("td");
-        celdas[0].textContent = usuario.nombre;
-        celdas[1].textContent = usuario.email;
+        crearCelda(fila, usuario.nombre);
+        crearCelda(fila, usuario.email);
+        const celdaRol = crearCelda(fila, "");
+        const celdaGuardar = crearCelda(fila, "");
 
         if (usuario.rol == "cliente") {
-            celdas[2].textContent = textosRol[usuario.rol];
+            celdaRol.textContent = textosRol[usuario.rol];
         } else {
+            //desplegable con los tres roles del taller (value = rol de la BD, texto = como se enseña)
             const select = document.createElement("select");
             select.setAttribute("aria-label", "Rol de " + usuario.nombre);
-            select.innerHTML = '<option value="admin">Administrador</option>' +
-    '<option value="oficina">Oficina</option>' +
-    '<option value="mecanico">Mecánico</option>';
+            const roles = ["admin", "oficina", "mecanico"];
+            for (let j = 0; j < roles.length; j++) {
+                const opcion = document.createElement("option");
+                opcion.value = roles[j];
+                opcion.textContent = textosRol[roles[j]];
+                select.appendChild(opcion);
+            }
             select.value = usuario.rol;
-            celdas[2].appendChild(select);
+            celdaRol.appendChild(select);
 
-            celdas[3].innerHTML = '<button type="button" class="boton boton-pequeno">Guardar</button>';
-            celdas[3].querySelector("button").addEventListener("click", (event) => {
+            const boton = crearBoton("Guardar", "boton boton-pequeno");
+            boton.addEventListener("click", (event) => {
                 cambiarRol(usuario, select.value);
             });
+            celdaGuardar.appendChild(boton);
         }
 
         tabla.appendChild(fila);
@@ -194,6 +205,29 @@ function cambiarRol(usuario, nuevoRol){
         console.log("Hubo un problema con la peticion fetch:" + error.message);
         mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
+}
+
+
+// ---------- Funciones para crear etiquetas ----------
+//Se usan en todas las tablas: createElement crea la etiqueta, textContent le pone el texto
+//y appendChild la mete dentro de otra (https://es.wikipedia.org/wiki/Document_Object_Model)
+
+//crea una celda <td> con el texto, la mete en la fila y la devuelve (por si hay que meterle algo mas)
+function crearCelda(fila, texto){
+    const celda = document.createElement("td");
+    celda.textContent = texto;
+    fila.appendChild(celda);
+    return celda;
+}
+
+
+//crea un <button type="button"> con su texto y sus clases
+function crearBoton(texto, clases){
+    const boton = document.createElement("button");
+    boton.type = "button";
+    boton.className = clases;
+    boton.textContent = texto;
+    return boton;
 }
 
 

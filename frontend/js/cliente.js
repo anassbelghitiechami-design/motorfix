@@ -65,61 +65,92 @@ function listarVehiculos(){
 
 
 //crea una tarjeta por cada vehiculo dentro de #listaVehiculos
+//Como no sabemos cuantos coches tiene el cliente, cada etiqueta se crea con createElement,
+//se le pone el dato con textContent (asi no se ejecuta como HTML) y se mete en la pagina con appendChild.
+//Son metodos del DOM, igual que getElementById (https://es.wikipedia.org/wiki/Document_Object_Model)
 function pintarVehiculos(vehiculos){
     const lista = document.getElementById("listaVehiculos");
-    lista.innerHTML = ""; //borramos lo que hubiera antes
+    lista.textContent = ""; //borramos lo que hubiera antes (dejar el texto vacio quita todo lo de dentro)
 
     //el desplegable del formulario de cita tiene los mismos vehiculos
     rellenarSelectVehiculos(vehiculos);
 
     if (vehiculos.length == 0) {
-        lista.innerHTML = '<p class="detalle">Todavía no tienes vehículos. Añade uno para poder pedir cita.</p>';
+        const aviso = document.createElement("p");
+        aviso.className = "detalle";
+        aviso.textContent = "Todavía no tienes vehículos. Añade uno para poder pedir cita.";
+        lista.appendChild(aviso);
         return;
     }
 
     for (let i = 0; i < vehiculos.length; i++) {
         const vehiculo = vehiculos[i];
 
+        //la tarjeta: <article class="tarjeta vehiculo">
         const tarjeta = document.createElement("article");
         tarjeta.className = "tarjeta vehiculo";
-        tarjeta.innerHTML = '<div class="vehiculo-cabecera">' +
-    '<span class="matricula"></span>' +
-    '</div>' +
-    '<div>' +
-    '<p class="vehiculo-nombre"></p>' +
-    '<p class="detalle"></p>' +
-    '</div>' +
-    '<div class="vehiculo-acciones">' +
-    '<a href="#pedir" class="boton">Pedir cita</a>' +
-    '<button type="button" class="boton-cuadrado boton-editar" aria-label="Editar vehículo">' +
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>' +
-    '</button>' +
-    '<button type="button" class="boton-cuadrado boton-borrar" aria-label="Borrar vehículo">' +
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"></path></svg>' +
-    '</button>' +
-    '</div>';
 
-        //los datos se ponen con textContent para que no se interpreten como HTML
-        tarjeta.querySelector(".matricula").textContent = vehiculo.matricula;
-        tarjeta.querySelector(".vehiculo-nombre").textContent = vehiculo.marca + " " + vehiculo.modelo;
-        tarjeta.querySelector(".detalle").textContent = vehiculo.anio ? vehiculo.anio : "Año sin indicar";
+        //cabecera con la matricula: <div class="vehiculo-cabecera"><span class="matricula">1234ABC</span></div>
+        const cabecera = document.createElement("div");
+        cabecera.className = "vehiculo-cabecera";
+        const matricula = document.createElement("span");
+        matricula.className = "matricula";
+        matricula.textContent = vehiculo.matricula;
+        cabecera.appendChild(matricula);
+        tarjeta.appendChild(cabecera);
+
+        //marca, modelo y año
+        const datos = document.createElement("div");
+        const nombre = document.createElement("p");
+        nombre.className = "vehiculo-nombre";
+        nombre.textContent = vehiculo.marca + " " + vehiculo.modelo;
+        datos.appendChild(nombre);
+        const anio = document.createElement("p");
+        anio.className = "detalle";
+        anio.textContent = vehiculo.anio ? vehiculo.anio : "Año sin indicar";
+        datos.appendChild(anio);
+        tarjeta.appendChild(datos);
+
+        //los botones de la tarjeta
+        const acciones = document.createElement("div");
+        acciones.className = "vehiculo-acciones";
 
         //al pulsar "Pedir cita" se deja elegido este vehiculo en el formulario de cita
-        tarjeta.querySelector(".boton").addEventListener("click", (event) => {
+        const pedir = document.createElement("a");
+        pedir.href = "#pedir";
+        pedir.className = "boton";
+        pedir.textContent = "Pedir cita";
+        pedir.addEventListener("click", (event) => {
             document.getElementById("vehiculoCita").value = vehiculo.matricula;
         });
+        acciones.appendChild(pedir);
 
         //al pulsar el lapiz se rellena el formulario con este vehiculo y se muestra
-        tarjeta.querySelector(".boton-editar").addEventListener("click", (event) => {
+        const editar = document.createElement("button");
+        editar.type = "button";
+        editar.className = "boton-cuadrado boton-editar";
+        editar.textContent = "✎";
+        editar.title = "Editar vehículo";
+        editar.addEventListener("click", (event) => {
             prepararFormulario(vehiculo);
             location.href = "#nuevoVehiculo";
         });
+        acciones.appendChild(editar);
 
-        //al pulsar la papelera se borra el vehiculo (preguntando antes)
-        tarjeta.querySelector(".boton-borrar").addEventListener("click", (event) => {
+        //al pulsar la X se borra el vehiculo (preguntando antes)
+        const borrar = document.createElement("button");
+        borrar.type = "button";
+        borrar.className = "boton-cuadrado boton-borrar";
+        borrar.textContent = "✕";
+        borrar.title = "Borrar vehículo";
+        borrar.addEventListener("click", (event) => {
             borrarVehiculo(vehiculo);
         });
+        acciones.appendChild(borrar);
 
+        tarjeta.appendChild(acciones);
+
+        //y por ultimo metemos la tarjeta en la lista para que se vea
         lista.appendChild(tarjeta);
     }
 }
@@ -238,7 +269,7 @@ function borrarVehiculo(vehiculo){
 //pone una opcion en el desplegable de la cita por cada vehiculo
 function rellenarSelectVehiculos(vehiculos){
     const select = document.getElementById("vehiculoCita");
-    select.innerHTML = "";
+    select.textContent = ""; //quitamos las opciones que hubiera
 
     for (let i = 0; i < vehiculos.length; i++) {
         const opcion = document.createElement("option");
@@ -281,7 +312,7 @@ function listarCitas(){
 //crea una fila por cada cita en #listaCitas con su fecha, su vehiculo y su estado
 function pintarCitas(citas){
     const lista = document.getElementById("listaCitas");
-    lista.innerHTML = "";
+    lista.textContent = "";
 
     //textos que se enseñan para cada estado de la BD
     const textosEstado = {
@@ -297,7 +328,7 @@ function pintarCitas(citas){
     document.getElementById("reparacion").classList.add("oculto");
 
     if (citas.length == 0) {
-        lista.innerHTML = '<li class="fila"><p class="detalle">Todavía no has pedido ninguna cita.</p></li>';
+        lista.appendChild(crearFilaVacia("Todavía no has pedido ninguna cita."));
         return;
     }
 
@@ -309,24 +340,42 @@ function pintarCitas(citas){
         const fecha = partes[0].split("-");      //["2026", "10", "28"]
         const hora = partes[1].substring(0, 5);  //"09:30"
 
+        //cada etiqueta se crea con createElement, se rellena con textContent y se mete con appendChild
         const fila = document.createElement("li");
         fila.className = "fila";
-        fila.innerHTML = '<p class="fecha-cita"><span class="dia"></span> <span class="mes"></span></p>' +
-             '<div class="fila-texto">' +
-             '<p class="fila-titulo"></p>' +
-             '<p class="detalle"></p>' +
-             '</div>' +
-             '<span class="estado"></span>';
 
-        fila.querySelector(".dia").textContent = fecha[2];
-        fila.querySelector(".mes").textContent = meses[parseInt(fecha[1]) - 1];
+        //la fecha a la izquierda: <p class="fecha-cita"><span class="dia">28</span> <span class="mes">oct</span></p>
+        const fechaCita = document.createElement("p");
+        fechaCita.className = "fecha-cita";
+        const dia = document.createElement("span");
+        dia.className = "dia";
+        dia.textContent = fecha[2];
+        fechaCita.appendChild(dia);
+        const mes = document.createElement("span");
+        mes.className = "mes";
+        mes.textContent = meses[parseInt(fecha[1]) - 1];
+        fechaCita.appendChild(mes);
+        fila.appendChild(fechaCita);
+
+        //el texto del medio
+        const texto = document.createElement("div");
+        texto.className = "fila-texto";
+        const titulo = document.createElement("p");
+        titulo.className = "fila-titulo";
         //si el cliente escribio un motivo se enseña ese, si no el tipo de servicio
-        fila.querySelector(".fila-titulo").textContent = cita.motivo ? cita.motivo : cita.tipo_servicio;
-        fila.querySelector(".detalle").textContent = cita.marca + " " + cita.modelo + " · " + cita.tipo_servicio + " · " + hora;
+        titulo.textContent = cita.motivo ? cita.motivo : cita.tipo_servicio;
+        texto.appendChild(titulo);
+        const detalle = document.createElement("p");
+        detalle.className = "detalle";
+        detalle.textContent = cita.marca + " " + cita.modelo + " · " + cita.tipo_servicio + " · " + hora;
+        texto.appendChild(detalle);
+        fila.appendChild(texto);
 
-        const estado = fila.querySelector(".estado");
+        //la etiqueta del estado a la derecha (la clase estado-xxx le da el color)
+        const estado = document.createElement("span");
+        estado.className = "estado estado-" + cita.estado;
         estado.textContent = textosEstado[cita.estado];
-        estado.classList.add("estado-" + cita.estado);
+        fila.appendChild(estado);
 
         lista.appendChild(fila);
 
@@ -351,8 +400,14 @@ function solicitarCita(){
     cita.matricula = document.getElementById("vehiculoCita").value;
     cita.fecha = document.getElementById("fecha").value;
     cita.hora = document.getElementById("hora").value;
-    //de los radio buttons cogemos el que esta marcado
-    cita.tipo_servicio = document.querySelector('input[name="tipo_servicio"]:checked').value;
+    //de los radio buttons cogemos el que esta marcado: getElementsByName da todos los que se llaman tipo_servicio
+    //y con un for miramos cual tiene checked a true
+    const radios = document.getElementsByName("tipo_servicio");
+    for (let i = 0; i < radios.length; i++) {
+        if (radios[i].checked) {
+            cita.tipo_servicio = radios[i].value;
+        }
+    }
     cita.motivo = document.getElementById("motivo").value.trim();
 
     if (cita.matricula == "") {
@@ -427,10 +482,10 @@ function listarFacturas(){
 //una fila por factura con el vehiculo, la fecha, el desglose (base + IVA) y el total
 function pintarFacturas(facturas){
     const lista = document.getElementById("listaFacturas");
-    lista.innerHTML = "";
+    lista.textContent = "";
 
     if (facturas.length == 0) {
-        lista.innerHTML = '<li class="fila"><p class="detalle">Todavía no tienes facturas.</p></li>';
+        lista.appendChild(crearFilaVacia("Todavía no tienes facturas."));
         return;
     }
 
@@ -442,20 +497,46 @@ function pintarFacturas(facturas){
 
         const fila = document.createElement("li");
         fila.className = "fila";
-        fila.innerHTML = '<div class="fila-texto">' +
-             '<p class="fila-titulo"></p>' +
-             '<p class="detalle"></p>' +
-             '<p class="detalle desglose"></p>' +
-             '</div>' +
-             '<p class="total"></p>';
 
-        fila.querySelector(".fila-titulo").textContent = "Factura " + factura.numero;
-        fila.querySelector(".detalle").textContent = factura.marca + " " + factura.modelo + " · " + factura.tipo_servicio + " · " + fecha[2] + "/" + fecha[1] + "/" + fecha[0];
-        fila.querySelector(".desglose").textContent = "Base " + formatearEuros(factura.base_imponible) + " + IVA " + Number(factura.iva_pct) + "% " + formatearEuros(factura.cuota_iva);
-        fila.querySelector(".total").textContent = formatearEuros(factura.total);
+        const texto = document.createElement("div");
+        texto.className = "fila-texto";
+
+        const titulo = document.createElement("p");
+        titulo.className = "fila-titulo";
+        titulo.textContent = "Factura " + factura.numero;
+        texto.appendChild(titulo);
+
+        const detalle = document.createElement("p");
+        detalle.className = "detalle";
+        detalle.textContent = factura.marca + " " + factura.modelo + " · " + factura.tipo_servicio + " · " + fecha[2] + "/" + fecha[1] + "/" + fecha[0];
+        texto.appendChild(detalle);
+
+        const desglose = document.createElement("p");
+        desglose.className = "detalle desglose";
+        desglose.textContent = "Base " + formatearEuros(factura.base_imponible) + " + IVA " + Number(factura.iva_pct) + "% " + formatearEuros(factura.cuota_iva);
+        texto.appendChild(desglose);
+
+        fila.appendChild(texto);
+
+        const total = document.createElement("p");
+        total.className = "total";
+        total.textContent = formatearEuros(factura.total);
+        fila.appendChild(total);
 
         lista.appendChild(fila);
     }
+}
+
+
+//crea la fila <li class="fila"><p class="detalle">texto</p></li> que sale cuando una lista esta vacia
+function crearFilaVacia(texto){
+    const fila = document.createElement("li");
+    fila.className = "fila";
+    const aviso = document.createElement("p");
+    aviso.className = "detalle";
+    aviso.textContent = texto;
+    fila.appendChild(aviso);
+    return fila;
 }
 
 

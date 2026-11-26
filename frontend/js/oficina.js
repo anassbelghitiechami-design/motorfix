@@ -97,10 +97,13 @@ function listarCitas(){
 
 
 //pinta en #tablaCitas las citas del estado elegido en el filtro (o todas)
+//Como no sabemos cuantas citas hay, cada etiqueta se crea con createElement,
+//se le pone el dato con textContent (asi no se ejecuta como HTML) y se mete en la pagina con appendChild.
+//Son metodos del DOM, igual que getElementById (https://es.wikipedia.org/wiki/Document_Object_Model)
 function pintarCitas(){
     const tabla = document.getElementById("tablaCitas");
     const estadoElegido = filtroEstado.value;
-    tabla.innerHTML = "";
+    tabla.textContent = ""; //borramos las filas que hubiera antes
 
     let pintadas = 0;
     for (let i = 0; i < citas.length; i++) {
@@ -110,36 +113,42 @@ function pintarCitas(){
             continue; //no es del estado del filtro, pasamos a la siguiente
         }
 
+        //una fila <tr> con una celda <td> por columna
         const fila = document.createElement("tr");
-        fila.innerHTML = '<td></td><td></td><td></td><td></td><td></td>' +
-    '<td><span class="estado"></span></td>' +
-    '<td><div class="acciones-tabla"></div></td>';
-        const celdas = fila.querySelectorAll("td");
-        celdas[0].textContent = formatearFecha(cita.fecha_hora);
-        celdas[1].textContent = cita.cliente;
-        celdas[2].textContent = cita.marca + " " + cita.modelo + " · " + cita.matricula;
-        celdas[3].textContent = cita.tipo_servicio + (cita.motivo ? " · " + cita.motivo : "");
-        celdas[4].textContent = cita.mecanico ? cita.mecanico : "-";
+        crearCelda(fila, formatearFecha(cita.fecha_hora));
+        crearCelda(fila, cita.cliente);
+        crearCelda(fila, cita.marca + " " + cita.modelo + " · " + cita.matricula);
+        crearCelda(fila, cita.tipo_servicio + (cita.motivo ? " · " + cita.motivo : ""));
+        const celdaMecanico = crearCelda(fila, cita.mecanico ? cita.mecanico : "-");
 
-        const estado = fila.querySelector(".estado");
+        //la etiqueta del estado (la clase estado-xxx le da el color)
+        const celdaEstado = crearCelda(fila, "");
+        const estado = document.createElement("span");
+        estado.className = "estado estado-" + cita.estado;
         estado.textContent = textosEstado[cita.estado];
-        estado.classList.add("estado-" + cita.estado);
+        celdaEstado.appendChild(estado);
+
+        //la ultima celda tiene un div para los botones
+        const celdaAcciones = crearCelda(fila, "");
+        const acciones = document.createElement("div");
+        acciones.className = "acciones-tabla";
+        celdaAcciones.appendChild(acciones);
 
         //las pendientes se validan eligiendo mecanico o se rechazan
         if (cita.estado == "pendiente") {
-            pintarAccionesPendiente(cita, celdas[4], fila.querySelector(".acciones-tabla"));
+            pintarAccionesPendiente(cita, celdaMecanico, acciones);
         }
 
         //las finalizadas se facturan (si ya tienen factura se enseña su numero y el total)
         if (cita.estado == "finalizada") {
-            const acciones = fila.querySelector(".acciones-tabla");
             if (cita.factura) {
                 acciones.textContent = "Factura " + cita.factura + " · " + Number(cita.total).toFixed(2).replace(".", ",") + " €";
             } else {
-                acciones.innerHTML = '<button type="button" class="boton boton-pequeno">Generar factura</button>';
-                acciones.querySelector("button").addEventListener("click", (event) => {
+                const botonFactura = crearBoton("Generar factura", "boton boton-pequeno");
+                botonFactura.addEventListener("click", (event) => {
                     generarFactura(cita);
                 });
+                acciones.appendChild(botonFactura);
             }
         }
 
@@ -148,7 +157,7 @@ function pintarCitas(){
     }
 
     if (pintadas == 0) {
-        tabla.innerHTML = '<tr><td colspan="7" class="detalle">No hay citas.</td></tr>';
+        tabla.appendChild(crearFilaVacia("No hay citas.", 7));
     }
 }
 
@@ -157,26 +166,33 @@ function pintarCitas(){
 function pintarAccionesPendiente(cita, celdaMecanico, acciones){
     const select = document.createElement("select");
     select.setAttribute("aria-label", "Mecánico");
-    select.innerHTML = '<option value="">Elegir mecánico</option>';
+
+    //la primera opcion (vacia) obliga a elegir un mecanico
+    const primera = document.createElement("option");
+    primera.value = "";
+    primera.textContent = "Elegir mecánico";
+    select.appendChild(primera);
+
     for (let j = 0; j < mecanicos.length; j++) {
         const opcion = document.createElement("option");
         opcion.value = mecanicos[j].id_usuario;
         opcion.textContent = mecanicos[j].nombre;
         select.appendChild(opcion);
     }
-    celdaMecanico.innerHTML = "";
+    celdaMecanico.textContent = ""; //quitamos el "-"
     celdaMecanico.appendChild(select);
 
-    acciones.innerHTML = '<button type="button" class="boton boton-pequeno">Confirmar</button>' +
-            '<button type="button" class="boton boton-secundario boton-pequeno">Rechazar</button>';
-    const botones = acciones.querySelectorAll("button");
-
-    botones[0].addEventListener("click", (event) => {
+    const botonConfirmar = crearBoton("Confirmar", "boton boton-pequeno");
+    botonConfirmar.addEventListener("click", (event) => {
         validarCita(cita, select.value);
     });
-    botones[1].addEventListener("click", (event) => {
+    acciones.appendChild(botonConfirmar);
+
+    const botonRechazar = crearBoton("Rechazar", "boton boton-secundario boton-pequeno");
+    botonRechazar.addEventListener("click", (event) => {
         rechazarCita(cita);
     });
+    acciones.appendChild(botonRechazar);
 }
 
 
@@ -330,26 +346,25 @@ function listarClientes(){
 function pintarClientes(clientes){
     const tabla = document.getElementById("tablaClientes");
     const select = document.getElementById("clienteVehiculo");
-    tabla.innerHTML = "";
-    select.innerHTML = "";
+    tabla.textContent = "";
+    select.textContent = "";
 
     if (clientes.length == 0) {
-        tabla.innerHTML = '<tr><td colspan="6" class="detalle">Todavía no hay clientes registrados.</td></tr>';
+        tabla.appendChild(crearFilaVacia("Todavía no hay clientes registrados.", 6));
         return;
     }
 
     for (let i = 0; i < clientes.length; i++) {
         const cliente = clientes[i];
 
+        //una fila <tr> con una celda <td> por columna
         const fila = document.createElement("tr");
-        fila.innerHTML = "<td></td><td></td><td></td><td></td><td></td><td></td>";
-        const celdas = fila.querySelectorAll("td");
-        celdas[0].textContent = cliente.nombre;
-        celdas[1].textContent = cliente.dni;
-        celdas[2].textContent = cliente.email;
-        celdas[3].textContent = cliente.telefono;
-        celdas[4].textContent = cliente.localidad ? cliente.localidad : "-";
-        celdas[5].textContent = cliente.num_vehiculos;
+        crearCelda(fila, cliente.nombre);
+        crearCelda(fila, cliente.dni);
+        crearCelda(fila, cliente.email);
+        crearCelda(fila, cliente.telefono);
+        crearCelda(fila, cliente.localidad ? cliente.localidad : "-");
+        crearCelda(fila, cliente.num_vehiculos);
         tabla.appendChild(fila);
 
         const opcion = document.createElement("option");
@@ -392,10 +407,10 @@ function listarVehiculos(){
 
 function pintarVehiculos(vehiculos){
     const tabla = document.getElementById("tablaVehiculos");
-    tabla.innerHTML = "";
+    tabla.textContent = "";
 
     if (vehiculos.length == 0) {
-        tabla.innerHTML = '<tr><td colspan="5" class="detalle">Todavía no hay vehículos.</td></tr>';
+        tabla.appendChild(crearFilaVacia("Todavía no hay vehículos.", 5));
         return;
     }
 
@@ -403,17 +418,18 @@ function pintarVehiculos(vehiculos){
         const vehiculo = vehiculos[i];
 
         const fila = document.createElement("tr");
-        fila.innerHTML = '<td></td><td></td><td></td><td></td>' +
-        '<td><button type="button" class="boton boton-secundario boton-pequeno">Borrar</button></td>';
-        const celdas = fila.querySelectorAll("td");
-        celdas[0].textContent = vehiculo.matricula;
-        celdas[1].textContent = vehiculo.marca + " " + vehiculo.modelo;
-        celdas[2].textContent = vehiculo.anio ? vehiculo.anio : "-";
-        celdas[3].textContent = vehiculo.cliente;
+        crearCelda(fila, vehiculo.matricula);
+        crearCelda(fila, vehiculo.marca + " " + vehiculo.modelo);
+        crearCelda(fila, vehiculo.anio ? vehiculo.anio : "-");
+        crearCelda(fila, vehiculo.cliente);
 
-        fila.querySelector("button").addEventListener("click", (event) => {
+        //la ultima celda tiene el boton de borrar
+        const celdaBorrar = crearCelda(fila, "");
+        const botonBorrar = crearBoton("Borrar", "boton boton-secundario boton-pequeno");
+        botonBorrar.addEventListener("click", (event) => {
             borrarVehiculo(vehiculo);
         });
+        celdaBorrar.appendChild(botonBorrar);
 
         tabla.appendChild(fila);
     }
@@ -498,6 +514,40 @@ function borrarVehiculo(vehiculo){
         console.log("Hubo un problema con la peticion fetch:" + error.message);
         mostrarMensaje("No se ha podido conectar con el servidor", "error");
     });
+}
+
+
+// ---------- Funciones para crear etiquetas ----------
+//Se usan en todas las tablas: createElement crea la etiqueta, textContent le pone el texto
+//y appendChild la mete dentro de otra (https://es.wikipedia.org/wiki/Document_Object_Model)
+
+//crea una celda <td> con el texto, la mete en la fila y la devuelve (por si hay que meterle algo mas)
+function crearCelda(fila, texto){
+    const celda = document.createElement("td");
+    celda.textContent = texto;
+    fila.appendChild(celda);
+    return celda;
+}
+
+
+//crea un <button type="button"> con su texto y sus clases
+function crearBoton(texto, clases){
+    const boton = document.createElement("button");
+    boton.type = "button";
+    boton.className = clases;
+    boton.textContent = texto;
+    return boton;
+}
+
+
+//crea la fila <tr><td colspan="..." class="detalle">texto</td></tr> que sale cuando una tabla esta vacia
+//colspan es el numero de columnas que ocupa la celda (todas las de la tabla)
+function crearFilaVacia(texto, columnas){
+    const fila = document.createElement("tr");
+    const celda = crearCelda(fila, texto);
+    celda.colSpan = columnas;
+    celda.className = "detalle";
+    return fila;
 }
 
 

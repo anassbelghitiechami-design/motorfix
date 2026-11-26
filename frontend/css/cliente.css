@@ -329,9 +329,10 @@ p {
     cursor: pointer;
 }
 
-.boton-cuadrado svg {
-    width: 18px;
-    height: 18px;
+/* el lapiz y la X son caracteres de texto, se hacen un poco mas grandes */
+.boton-cuadrado {
+    font-size: 18px;
+    line-height: 1;
 }
 
 .boton-cuadrado:hover {
